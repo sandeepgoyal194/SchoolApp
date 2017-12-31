@@ -1,33 +1,31 @@
 package frameworks.appsession;
-
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 
 import transport.school.com.schoolapp.LoginActivity;
+import transport.school.com.schoolapp.bean.LoginResponse;
+import transport.school.com.schoolapp.bean.Teacher;
 /**
  * Created by Sandeep on 21/01/2017.
  */
-
 public class AppBaseApplication extends Application {
     private static AppBaseApplication mApplication;
-    private UserInfo mUser = null;
-    private LoginResponse mLoginResponse = null;
+    private Teacher mUser = null;
     AppUserManager mAppUserManager = null;
     AppSessionManager mAppSessionManager = null;
-
     private boolean mCallPermission;
     private boolean mMicroPhonePermission;
     private boolean mContactPermission;
     private boolean mCameraPermission;
-
     public static String TAG = AppBaseApplication.class.getName();
+    private LoginResponse mLoginResponse;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mApplication = this;
-      //  JodaTimeAndroid.init(this);
+        //  JodaTimeAndroid.init(this);
     }
 
     @Override
@@ -45,21 +43,24 @@ public class AppBaseApplication extends Application {
 
     public void initSession() {
         if (mAppSessionManager.isRunningSession()) {
-            //mLoginResponse = mAppSessionManager.getSession();
+            mLoginResponse = mAppSessionManager.getSession();
         }
     }
 
-    public void saveUser(UserInfo user) {
+    public LoginResponse getSession() {
+        return mAppSessionManager.getSession();
+    }
+
+    public void saveUser(Teacher user) {
         mAppUserManager.saveUser(user);
         mUser = user;
     }
 
-    public UserInfo getUser() {
+    public Teacher getUser() {
         if (mUser == null) {
             mUser = mAppUserManager.getUser();
         }
         return mUser;
-
     }
 
     public void setSession(LoginResponse loginResponse) {
@@ -67,20 +68,19 @@ public class AppBaseApplication extends Application {
         mLoginResponse = loginResponse;
     }
 
-
     public boolean isUserLogin() {
-        /*if (mLoginResponse == null) {
+        if (mLoginResponse == null) {
             return false;
-        }*/
+        }
         return true;
     }
 
     public String getmAuthID() {
-       if (mLoginResponse == null) {
+        if (mLoginResponse == null) {
             startLogin();
             return null;
         }
-        return mLoginResponse.getApi_key();
+        return mLoginResponse.getmToken();
     }
 
     public void onLogout() {
@@ -98,26 +98,14 @@ public class AppBaseApplication extends Application {
 
     private void clearUser() {
         mAppUserManager.clearUser();
-       // mUser = null;
+         mUser = null;
     }
 
     private void clearSession() {
         mAppSessionManager.clearSession();
-        //mLoginResponse = null;
+        mLoginResponse = null;
     }
 
-    /*public boolean isUserTypeDefined() {
-        return !(mLoginResponse.getUser_type() == null);
-    }
-
-    public String getUserType() {
-        return mLoginResponse.getUser_type();
-    }
-
-    public void setUserType(String userType) {
-        mLoginResponse.setUser_type(userType);
-    //    setSession(mLoginResponse);*/
-//    }
 
     public boolean ismCallPermission() {
         return mCallPermission;

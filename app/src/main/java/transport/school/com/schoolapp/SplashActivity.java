@@ -1,15 +1,14 @@
 package transport.school.com.schoolapp;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
+import frameworks.appsession.AppBaseApplication;
 /**
  * Created by Naveen on 11/26/2017.
  */
 public class SplashActivity extends AppCompatActivity {
-
     // Splash screen timer
     private static int SPLASH_TIME_OUT = 3000;
 
@@ -17,7 +16,6 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
         new Handler().postDelayed(new Runnable() {
 
             /*
@@ -29,13 +27,17 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 // This method will be executed once the timer is over
                 // Start your app main activity
-                Intent i = new Intent(SplashActivity.this, LoginActivity.class);
-                startActivity(i);
-
+                AppBaseApplication.getApplication().initSession();
+                if (AppBaseApplication.getApplication().isUserLogin()) {
+                    Intent i = new Intent(SplashActivity.this, StudentAttendanceActivity.class);
+                    startActivity(i);
+                } else {
+                    Intent i = new Intent(SplashActivity.this, LoginActivity.class);
+                    startActivity(i);
+                }
                 // close this activity
                 finish();
             }
         }, SPLASH_TIME_OUT);
     }
-
 }

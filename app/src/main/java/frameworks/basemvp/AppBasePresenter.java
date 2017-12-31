@@ -46,7 +46,6 @@ public abstract class AppBasePresenter<T extends IView> implements IPresenter<T>
 
     @Override
     public void onProfileDownloadSuccessfully(UserInfo userInfo) {
-        AppBaseApplication.getApplication().saveUser(userInfo);
         profileSyneced();
     }
 

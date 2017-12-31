@@ -1,8 +1,6 @@
 package transport.school.com.schoolapp;
-
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -11,104 +9,56 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import frameworks.appsession.AppBaseApplication;
+import frameworks.retrofit.ResponseResolver;
+import frameworks.retrofit.RestError;
+import frameworks.retrofit.WebServicesWrapper;
+import retrofit2.Response;
+import transport.school.com.schoolapp.bean.Route;
+import transport.school.com.schoolapp.bean.RouteStudentList;
 /**
  * Created by Naveen.Goyal on 11/29/2017.
  */
-
 public class StudentAttendanceActivity extends AppCompatActivity {
-
     private RecyclerView recyclerView;
     private StudentAttendanceAdapter adapter;
-    private List<StudentModel> studentList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window w = getWindow(); // in Activity's onCreate() for instance
-            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendance);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        adapter = new StudentAttendanceAdapter(this);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-
-        studentList = new ArrayList<>();
-        adapter = new StudentAttendanceAdapter(this, studentList);
-
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
-
-        prepareAlbums();
-
+        prepareStudentList();
     }
 
-    /**
-     * Adding few albums for testing
-     */
-    private void prepareAlbums() {
-        int[] covers = new int[]{
-                R.drawable.album1,
-                R.drawable.album2,
-                R.drawable.album3,
-                R.drawable.album4,
-                R.drawable.album5,
-                R.drawable.album6,
-                R.drawable.album7,
-                R.drawable.album8,
-                R.drawable.album9,
-                R.drawable.album10,
-                R.drawable.album11};
+    private void prepareStudentList() {
+        Route route = new Route();
+        route.setRouteid(AppBaseApplication.getApplication().getSession().getTeacher().get(0).getRouteid());
+        WebServicesWrapper.getInstance().getStudentListForRoute(route, new ResponseResolver<RouteStudentList>() {
+            @Override
+            public void onSuccess(RouteStudentList routeStudentList, Response response) {
+                adapter.setStudentList(routeStudentList.getStudents());
+            }
 
-        StudentModel a = new StudentModel("True Romance", covers[0]);
-        studentList.add(a);
-
-        a = new StudentModel("Xscpae", covers[1]);
-        studentList.add(a);
-
-        a = new StudentModel("Maroon 5", covers[2]);
-        studentList.add(a);
-
-        a = new StudentModel("Born to Die", covers[3]);
-        studentList.add(a);
-
-        a = new StudentModel("Honeymoon", covers[4]);
-        studentList.add(a);
-
-        a = new StudentModel("I Need a Doctor", covers[5]);
-        studentList.add(a);
-
-        a = new StudentModel("Loud", covers[6]);
-        studentList.add(a);
-
-        a = new StudentModel("Legend", covers[7]);
-        studentList.add(a);
-
-        a = new StudentModel("Hello", covers[8]);
-        studentList.add(a);
-
-        a = new StudentModel("Greatest Hits", covers[9]);
-        studentList.add(a);
-
-        adapter.notifyDataSetChanged();
+            @Override
+            public void onFailure(RestError error, String msg) {
+            }
+        });
     }
 
     /**
      * RecyclerView item decoration - give equal margin around grid item
      */
     public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
-
         private int spanCount;
         private int spacing;
         private boolean includeEdge;
@@ -123,11 +73,9 @@ public class StudentAttendanceActivity extends AppCompatActivity {
         public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
             int position = parent.getChildAdapterPosition(view); // item position
             int column = position % spanCount; // item column
-
             if (includeEdge) {
                 outRect.left = spacing - column * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
                 outRect.right = (column + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
-
                 if (position < spanCount) { // top edge
                     outRect.top = spacing;
                 }

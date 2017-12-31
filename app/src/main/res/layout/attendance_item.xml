@@ -36,12 +36,17 @@
                 android:text="Student Name"
                 android:textSize="16sp" />
 
-            <transport.school.com.schoolapp.CustomCheckBox
-                android:id="@+id/attendance_checkbox"
+            <CheckBox
+                android:id="@+id/checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:focusableInTouchMode="false"
+                android:focusable="false"
+                android:clickable="true"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"/>
+                android:layout_alignParentRight="true"
+                android:includeFontPadding="false" />
 
         </RelativeLayout>
 

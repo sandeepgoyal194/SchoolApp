@@ -5,6 +5,7 @@ import android.content.Context;
 import frameworks.dbhandler.PrefManager;
 
 import frameworks.retrofit.GsonFactory;
+import transport.school.com.schoolapp.bean.LoginResponse;
 /**
  * Created by Sandeep on 04/12/2016.
  */

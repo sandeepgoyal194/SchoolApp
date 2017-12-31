@@ -3,9 +3,9 @@ package frameworks.baselogin;
 
 
 import frameworks.appsession.AppBaseApplication;
-import frameworks.appsession.LoginResponse;
 import frameworks.appsession.UserInfo;
 import frameworks.basemvp.AppBasePresenter;
+import transport.school.com.schoolapp.bean.LoginResponse;
 /**
  * Created by sandeep.g9 on 7/27/2017.
  */

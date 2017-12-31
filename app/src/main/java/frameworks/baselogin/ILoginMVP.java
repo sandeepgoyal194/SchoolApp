@@ -3,10 +3,10 @@ package frameworks.baselogin;
 
 
 
-import frameworks.appsession.LoginResponse;
 import frameworks.appsession.UserInfo;
 import frameworks.basemvp.IPresenter;
 import frameworks.basemvp.IView;
+import transport.school.com.schoolapp.bean.LoginResponse;
 /**
  * Created by sandeep.g9 on 7/27/2017.
  * This is Base Login MVP
