@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import transport.school.com.schoolapp.LoginActivity;
 import transport.school.com.schoolapp.bean.LoginResponse;
+import transport.school.com.schoolapp.bean.Route;
 import transport.school.com.schoolapp.bean.Teacher;
 /**
  * Created by Sandeep on 21/01/2017.
@@ -137,5 +138,10 @@ public class AppBaseApplication extends Application {
 
     public void setmCameraPermission(boolean mCameraPermission) {
         this.mCameraPermission = mCameraPermission;
+    }
+    public Route getRoute() {
+        Route route = new Route();
+        route.setRouteid(getSession().getTeacher().get(0).getRouteid());
+        return route;
     }
 }

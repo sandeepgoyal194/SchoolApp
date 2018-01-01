@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/btn_start_morning_route"
+            android:layout_width="198dp"
+            android:layout_height="61dp"
+            android:layout_gravity="center"
+            android:background="@drawable/button_shape_red"
+            android:gravity="center"
+            android:text="Start Morning Route"
+            android:layout_marginBottom="20dp"
+            android:textColor="@android:color/white"/>
+        <TextView
+            android:id="@+id/btn_start_evening_route"
+            android:layout_width="198dp"
+            android:layout_height="61dp"
+            android:layout_gravity="center"
+            android:background="@drawable/button_shape_red"
+            android:gravity="center"
+            android:text="Start Evening Route"
+            android:textColor="@android:color/white"/>
+    </LinearLayout>
+
+</LinearLayout>
