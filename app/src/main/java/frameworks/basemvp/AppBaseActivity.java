@@ -1,7 +1,7 @@
 package frameworks.basemvp;
-
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -16,26 +16,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.LocationRequest;
 
 import butterknife.ButterKnife;
 import frameworks.apppermission.PermissionActivity;
 import frameworks.customlayout.EmptyLayout;
+import frameworks.locationmanager.LocationManagerService;
 import frameworks.retrofit.imageloader.GlideImageLoaderImpl;
 import transport.school.com.schoolapp.R;
 /**
  * Created by sandeep.g9 on 3/7/2017.
  */
-
 public abstract class AppBaseActivity<T extends IPresenter> extends PermissionActivity implements IActivityView {
-
-
     public static final String TAG = "Villeger";
     protected android.support.v4.app.Fragment mAddedFragment;
     protected ActionBarDrawerToggle mActionBarDrawerToggle;
     public Toolbar mToolbar;
     FragmentManager mFragmentManager;
     FragmentTransaction mFragmentTransaction;
-
     IPresenter mPresenter;
 
     @Override
@@ -49,7 +47,6 @@ public abstract class AppBaseActivity<T extends IPresenter> extends PermissionAc
     }
 
     public abstract int getViewToCreate();
-
 
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
@@ -73,7 +70,6 @@ public abstract class AppBaseActivity<T extends IPresenter> extends PermissionAc
         }
     }
 
-
     protected void onStop() {
         super.onStop();
         if (mPresenter != null) {
@@ -83,17 +79,14 @@ public abstract class AppBaseActivity<T extends IPresenter> extends PermissionAc
 
     @Override
     public void showProgressBar() {
-
     }
 
     @Override
     public void showProgressBar(String message) {
-
     }
 
     @Override
     public void hideProgressBar() {
-
     }
 
     @Override
@@ -131,7 +124,6 @@ public abstract class AppBaseActivity<T extends IPresenter> extends PermissionAc
             }
         }
     }
-
 
     protected void addFrgment(android.support.v4.app.Fragment fragment, String fragmentTag, int containerView, boolean addToBackStack) {
         if (mFragmentManager == null) {
@@ -175,7 +167,6 @@ public abstract class AppBaseActivity<T extends IPresenter> extends PermissionAc
 
     @Override
     public void setPermission(int requestCode, boolean isGranted) {
-
     }
 
     @Override
@@ -202,11 +193,11 @@ public abstract class AppBaseActivity<T extends IPresenter> extends PermissionAc
         }
     }
 
-    public void setRightIcon(String url ) {
+    public void setRightIcon(String url) {
         ImageView rightIconView = (ImageView) findViewById(R.id.right_icon);
         View right_menu = findViewById(R.id.right_menu);
         if (rightIconView != null) {
-            new GlideImageLoaderImpl(getContext()).loadImage(url,rightIconView);
+            new GlideImageLoaderImpl(getContext()).loadImage(url, rightIconView);
             rightIconView.setVisibility(View.VISIBLE);
             right_menu.setVisibility(View.VISIBLE);
             right_menu.setOnClickListener(new View.OnClickListener() {
@@ -219,20 +210,41 @@ public abstract class AppBaseActivity<T extends IPresenter> extends PermissionAc
     }
 
     public void onLeftMenuClick() {
-
     }
 
     public void onRightMenuCLick() {
-
     }
-
 
     public void addEmptyLayout() {
         setContentView(getEmptyLayout());
-
     }
 
     public EmptyLayout getEmptyLayout() {
         return null;
+    }
+
+    @Override
+    public void onLocationPermissionGranted() {
+    }
+
+    @Override
+    public void onLocationPermissionDenied() {
+        showToast("Results may not be accurate as your location cannot be checked");
+        finish();
+    }
+
+    @Override
+    public void onLocationSettingEnabled() {
+        mLocationManager.setLocationPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    @Override
+    public void onLocationSettingEnableDenied() {
+        mLocationManager.setLocationPriority(LocationRequest.PRIORITY_NO_POWER);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        LocationManagerService.getInstance().setCurrentLocation(location);
     }
 }

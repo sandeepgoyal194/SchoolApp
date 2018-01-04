@@ -3,11 +3,13 @@ package frameworks.apppermission;
 
 
 import android.support.v7.app.AppCompatActivity;
+
+import frameworks.locationmanager.location.BaseLocationActivity;
 /**
  * Created by Sandeep on 21/01/2017.
  */
 
-abstract public class PermissionActivity extends AppCompatActivity {
+abstract public class PermissionActivity extends BaseLocationActivity {
     private static final int REQUEST_CODE = 0x1;
 
     public boolean getPermission(String permission, int requestcode) {
