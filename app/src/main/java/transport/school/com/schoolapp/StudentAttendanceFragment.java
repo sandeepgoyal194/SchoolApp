@@ -3,14 +3,18 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
+import butterknife.BindView;
 import frameworks.appsession.AppBaseApplication;
-import frameworks.basemvp.AppBaseActivity;
+import frameworks.basemvp.AppBaseFragment;
 import frameworks.basemvp.IPresenter;
 import frameworks.retrofit.ResponseResolver;
 import frameworks.retrofit.RestError;
@@ -21,16 +25,16 @@ import transport.school.com.schoolapp.bean.RouteStudentList;
 /**
  * Created by Naveen.Goyal on 11/29/2017.
  */
-public class StudentAttendanceActivity extends AppBaseActivity {
-    private RecyclerView recyclerView;
+public class StudentAttendanceFragment extends AppBaseFragment {
+    @BindView(R.id.recycler_view)
+    RecyclerView recyclerView;
     private StudentAttendanceAdapter adapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        adapter = new StudentAttendanceAdapter(this);
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        adapter = new StudentAttendanceAdapter(getContext());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -39,7 +43,7 @@ public class StudentAttendanceActivity extends AppBaseActivity {
             @Override
             public void onSuccess(ActiveRouteReply activeRouteReply, Response response) {
                 if (activeRouteReply.getStudents().get(0).getE().equals("0") || activeRouteReply.getStudents().get(0).getM().equals("0")) {
-                    startActivity(new Intent(StudentAttendanceActivity.this, StartRouteActivity.class));
+                    startActivity(new Intent(getContext(), StartRouteActivity.class));
                 }
             }
 
@@ -51,8 +55,8 @@ public class StudentAttendanceActivity extends AppBaseActivity {
     }
 
     @Override
-    public int getViewToCreate() {
-        return R.layout.activity_attendance;
+    public View getView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.activity_attendance, container, false);
     }
 
     @Override

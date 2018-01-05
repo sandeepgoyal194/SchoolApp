@@ -8,7 +8,7 @@ public class Student {
     @SerializedName("class")
     private String mClass;
     @SerializedName("profile_pic")
-    private Object mProfilePic;
+    private String mProfilePic;
     @SerializedName("routeid")
     private String mRouteid;
     @SerializedName("schoolid")
@@ -30,11 +30,11 @@ public class Student {
         this.mClass = mClass;
     }
 
-    public Object getProfilePic() {
+    public String getProfilePic() {
         return mProfilePic;
     }
 
-    public void setProfilePic(Object profilePic) {
+    public void setProfilePic(String profilePic) {
         mProfilePic = profilePic;
     }
 

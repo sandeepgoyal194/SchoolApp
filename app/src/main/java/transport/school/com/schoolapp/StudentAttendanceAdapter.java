@@ -21,6 +21,7 @@ import frameworks.customlayout.Utils;
 import frameworks.retrofit.ResponseResolver;
 import frameworks.retrofit.RestError;
 import frameworks.retrofit.WebServicesWrapper;
+import frameworks.retrofit.imageloader.GlideImageLoaderImpl;
 import retrofit2.Response;
 import transport.school.com.schoolapp.bean.AttendanceRecord;
 import transport.school.com.schoolapp.bean.AttendanceUpdateResponse;
@@ -57,7 +58,7 @@ public class StudentAttendanceAdapter extends RecyclerView.Adapter<StudentAttend
 
         public void setStudent(Student student) {
             studentName.setText(student.getStudentname());
-            Glide.with(mContext).load(student.getProfilePic()).into(thumbnail);
+            new GlideImageLoaderImpl(mContext).loadImage(student.getProfilePic(),thumbnail,R.drawable.blank_person);
             this.student = student;
         }
 
