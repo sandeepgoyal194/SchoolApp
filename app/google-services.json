@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "693249103401",
+    "firebase_url": "https://school-bus-tracking-cf0d1.firebaseio.com",
+    "project_id": "school-bus-tracking-cf0d1",
+    "storage_bucket": "school-bus-tracking-cf0d1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:693249103401:android:f539b7ed6db4a219",
+        "android_client_info": {
+          "package_name": "alpha.locateschoolbus.com"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "693249103401-go34iojk54c6rida8c0uosll5e75dbem.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpOSgLQXma36-72jzYUePq8mRQGqStBjM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
