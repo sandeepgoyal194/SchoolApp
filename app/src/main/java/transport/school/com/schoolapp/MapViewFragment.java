@@ -9,15 +9,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
+import com.akexorcist.googledirection.DirectionCallback;
+import com.akexorcist.googledirection.GoogleDirection;
+import com.akexorcist.googledirection.constant.TransportMode;
+import com.akexorcist.googledirection.model.Direction;
+import com.akexorcist.googledirection.model.Leg;
+import com.akexorcist.googledirection.util.DirectionConverter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -115,7 +120,7 @@ public class MapViewFragment extends Fragment {
                             for (Routestop routestop : routestops) {
                                 latLngs.add(new LatLng(Double.parseDouble(routestop.getLatitude()), Double.parseDouble(routestop.getLongitude())));
                             }
-                            drawPolyLineOnMap(latLngs);
+                            drawRoute(latLngs);
                         }
 
                         @Override
@@ -129,35 +134,46 @@ public class MapViewFragment extends Fragment {
         return rootView;
     }
 
-    public void navigateToPoint(LatLng latLng) {
-        CameraPosition position = new CameraPosition.Builder().target(latLng).build();
-        changeCameraPosition(position);
+    public void drawRoute(final List<LatLng> list) {
+        final LatLng origin = new LatLng(list.get(0).latitude, list.get(0).longitude);
+        final LatLng destination = new LatLng(list.get(list.size() - 1).latitude, list.get(list.size() - 1).longitude);
+        GoogleDirection.withServerKey("AIzaSyAUmVRXx43uVLZomeU1tRR5OYYkGuW6bew")
+                .from(origin)
+                .and(list)
+                .to(destination)
+                .transportMode(TransportMode.DRIVING)
+                .execute(new DirectionCallback() {
+                    @Override
+                    public void onDirectionSuccess(Direction direction, String rawBody) {
+                        if (direction.isOK()) {
+                            com.akexorcist.googledirection.model.Route route = direction.getRouteList().get(0);
+                            googleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).position(origin));
+                            googleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).position(destination));
+                            for (LatLng position : list.subList(1,list.size()-1)) {
+                                googleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).position(position));
+                            }
+                            for (Leg leg : route.getLegList()) {
+                                //List<Step> stepList = leg.getStepList();
+                                PolylineOptions polylineOptions = DirectionConverter.createPolyline(getContext(), leg.getDirectionPoint(), 5, Color.RED);
+                                googleMap.addPolyline(polylineOptions);
+                            }
+                            setCameraWithCoordinationBounds(route);
+                        } else {
+                        }
+                    }
+
+                    @Override
+                    public void onDirectionFailure(Throwable t) {
+                        // Do something
+                    }
+                });
     }
 
-    private void changeCameraPosition(CameraPosition cameraPosition) {
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-        googleMap.moveCamera(cameraUpdate);
-    }
-
-    public void addMarkerToMap(LatLng latLng) {
-        googleMap.addMarker(new MarkerOptions().position(latLng)
-                .title("title")
-                .snippet("snippet").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
-    }
-
-    public void drawPolyLineOnMap(List<LatLng> list) {
-        PolylineOptions polyOptions = new PolylineOptions();
-        polyOptions.color(Color.BLUE);
-        polyOptions.width(8);
-        polyOptions.addAll(list);
-        googleMap.addPolyline(polyOptions);
-        /*LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (LatLng latLng : list) {
-            builder.include(latLng);
-        }
-        final LatLngBounds bounds = builder.build();
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
-        googleMap.animateCamera(cu);*/
+    private void setCameraWithCoordinationBounds(com.akexorcist.googledirection.model.Route route) {
+        LatLng southwest = route.getBound().getSouthwestCoordination().getCoordination();
+        LatLng northeast = route.getBound().getNortheastCoordination().getCoordination();
+        LatLngBounds bounds = new LatLngBounds(southwest, northeast);
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
     }
 
     void setLocationOnMap(Locations location) {
@@ -172,7 +188,7 @@ public class MapViewFragment extends Fragment {
         } else if (!mMarker.getPosition().equals(currentLocationLatLong)) {
             mMarker.setPosition(currentLocationLatLong);
         }
-        setZoomLevel(currentLocationLatLong);
+        //setZoomLevel(currentLocationLatLong);
     }
 
     public void setZoomLevel(LatLng currentLocationLatLong) {

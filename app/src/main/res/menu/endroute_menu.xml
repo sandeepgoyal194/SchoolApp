@@ -6,4 +6,10 @@
         android:orderInCategory="100"
         android:title="@string/end_route"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/logout"
+        android:orderInCategory="100"
+        android:title="Logout"
+        android:visible="false"
+        app:showAsAction="never" />
 </menu>

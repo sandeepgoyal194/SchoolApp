@@ -141,32 +141,37 @@ public class MainActivity extends AppBaseActivity {
     @Override
     public void onLocationChanged(Location location) {
         super.onLocationChanged(location);
-        if(mapFragment != null) {
+        if (mapFragment != null) {
             mapFragment.onLocationChanged();
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.endroute_menu,menu);
+        getMenuInflater().inflate(R.menu.endroute_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Route route = new Route();
-        route.setRouteid(AppBaseApplication.getApplication().getRoute().getRouteid());
-        route.setmMorningEvening(AppBaseApplication.getApplication().getUser().getmMorningEvening());
-        WebServicesWrapper.getInstance().stopRoute(route, new ResponseResolver<RouteReply>() {
-            @Override
-            public void onSuccess(RouteReply routeReply, Response response) {
-                startActivity(new Intent(getContext(), StartRouteActivity.class));
-            }
+        switch (item.getItemId()) {
+            case R.id.end_route:
+                Route route = new Route();
+                route.setRouteid(AppBaseApplication.getApplication().getRoute().getRouteid());
+                route.setmMorningEvening(AppBaseApplication.getApplication().getUser().getmMorningEvening());
+                WebServicesWrapper.getInstance().stopRoute(route, new ResponseResolver<RouteReply>() {
+                    @Override
+                    public void onSuccess(RouteReply routeReply, Response response) {
+                        startActivity(new Intent(getContext(), StartRouteActivity.class));
+                    }
 
-            @Override
-            public void onFailure(RestError error, String msg) {
-            }
-        });
-        return super.onOptionsItemSelected(item);
+                    @Override
+                    public void onFailure(RestError error, String msg) {
+                    }
+                });
+                return super.onOptionsItemSelected(item);
+            case R.id.logout:
+        }
+        return true;
     }
 }
