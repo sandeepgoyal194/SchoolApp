@@ -12,7 +12,7 @@ import transport.school.com.schoolapp.bean.Teacher;
  */
 public class AppBaseApplication extends Application {
     private static AppBaseApplication mApplication;
-    private Teacher mUser = null;
+    private Route mUser = null;
     AppUserManager mAppUserManager = null;
     AppSessionManager mAppSessionManager = null;
     private boolean mCallPermission;
@@ -52,12 +52,12 @@ public class AppBaseApplication extends Application {
         return mAppSessionManager.getSession();
     }
 
-    public void saveUser(Teacher user) {
+    public void saveUser(Route user) {
         mAppUserManager.saveUser(user);
         mUser = user;
     }
 
-    public Teacher getUser() {
+    public Route getUser() {
         if (mUser == null) {
             mUser = mAppUserManager.getUser();
         }
@@ -143,5 +143,14 @@ public class AppBaseApplication extends Application {
         Route route = new Route();
         route.setRouteid(getSession().getTeacher().get(0).getRouteid());
         return route;
+    }
+
+    public boolean isMorningRoute() {
+        return (getUser().getmMorningEvening().equalsIgnoreCase("m"));
+
+    }
+    public boolean isEveningRoute() {
+        return (getUser().getmMorningEvening().equalsIgnoreCase("e"));
+
     }
 }

@@ -108,7 +108,7 @@ public class LoginActivity extends AppBaseActivity {
                 public void onSuccess(LoginResponse loginResponse, Response response) {
                     if (!loginResponse.getError()) {
                         AppBaseApplication.getApplication().setSession(loginResponse);
-                        Intent i = new Intent(LoginActivity.this, StudentAttendanceFragment.class);
+                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(i);
                         finish();
                     } else {

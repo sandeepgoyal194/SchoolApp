@@ -1,4 +1,5 @@
 package transport.school.com.schoolapp;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -27,7 +28,7 @@ public class StartRouteActivity extends AppBaseActivity {
 
     @OnClick({R.id.btn_start_morning_route, R.id.btn_start_evening_route})
     public void onViewClicked(View view) {
-        Route route = AppBaseApplication.getApplication().getRoute();
+        final Route route = AppBaseApplication.getApplication().getRoute();
         switch (view.getId()) {
             case R.id.btn_start_morning_route:
                 route.setmMorningEvening("m");
@@ -39,7 +40,8 @@ public class StartRouteActivity extends AppBaseActivity {
         WebServicesWrapper.getInstance().startRoute(route, new ResponseResolver<RouteReply>() {
             @Override
             public void onSuccess(RouteReply routeReply, Response response) {
-
+                AppBaseApplication.getApplication().saveUser(route);
+                finish();
             }
 
             @Override

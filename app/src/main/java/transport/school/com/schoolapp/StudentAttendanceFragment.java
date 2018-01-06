@@ -39,18 +39,6 @@ public class StudentAttendanceFragment extends AppBaseFragment {
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
-        WebServicesWrapper.getInstance().getActiveRoute(AppBaseApplication.getApplication().getRoute(), new ResponseResolver<ActiveRouteReply>() {
-            @Override
-            public void onSuccess(ActiveRouteReply activeRouteReply, Response response) {
-                if (activeRouteReply.getStudents().get(0).getE().equals("0") || activeRouteReply.getStudents().get(0).getM().equals("0")) {
-                    startActivity(new Intent(getContext(), StartRouteActivity.class));
-                }
-            }
-
-            @Override
-            public void onFailure(RestError error, String msg) {
-            }
-        });
         prepareStudentList();
     }
 

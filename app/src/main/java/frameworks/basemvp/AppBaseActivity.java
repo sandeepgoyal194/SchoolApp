@@ -20,10 +20,17 @@ import com.google.android.gms.location.LocationRequest;
 
 import butterknife.ButterKnife;
 import frameworks.apppermission.PermissionActivity;
+import frameworks.appsession.AppBaseApplication;
 import frameworks.customlayout.EmptyLayout;
 import frameworks.locationmanager.LocationManagerService;
+import frameworks.retrofit.ResponseResolver;
+import frameworks.retrofit.RestError;
+import frameworks.retrofit.WebServicesWrapper;
 import frameworks.retrofit.imageloader.GlideImageLoaderImpl;
+import retrofit2.Response;
 import transport.school.com.schoolapp.R;
+import transport.school.com.schoolapp.bean.LocationUpdateReply;
+import transport.school.com.schoolapp.bean.LocationUpdateRequest;
 /**
  * Created by sandeep.g9 on 3/7/2017.
  */
@@ -246,5 +253,18 @@ public abstract class AppBaseActivity<T extends IPresenter> extends PermissionAc
     @Override
     public void onLocationChanged(Location location) {
         LocationManagerService.getInstance().setCurrentLocation(location);
+        LocationUpdateRequest locationUpdateRequest = new LocationUpdateRequest();
+        locationUpdateRequest.setLongitude(location.getLongitude());
+        locationUpdateRequest.setLattitude(location.getLatitude());
+        locationUpdateRequest.setRouteid(AppBaseApplication.getApplication().getRoute().getRouteid());
+        WebServicesWrapper.getInstance().sendLocation(locationUpdateRequest, new ResponseResolver<LocationUpdateReply>() {
+            @Override
+            public void onSuccess(LocationUpdateReply locationUpdateReply, Response response) {
+            }
+
+            @Override
+            public void onFailure(RestError error, String msg) {
+            }
+        });
     }
 }

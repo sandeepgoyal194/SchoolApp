@@ -5,6 +5,7 @@ import android.content.Context;
 import frameworks.dbhandler.PrefManager;
 
 import frameworks.retrofit.GsonFactory;
+import transport.school.com.schoolapp.bean.Route;
 import transport.school.com.schoolapp.bean.Teacher;
 /**
  * Created by Sandeep on 06/12/2016.
@@ -19,17 +20,17 @@ public class AppUserManager {
         mContext = context;
     }
 
-    public void saveUser(Teacher user) {
+    public void saveUser(Route user) {
         PrefManager mPrefManager;
         mPrefManager = new PrefManager(mContext);
         mPrefManager.putString(KEY_SESSION_ID, GsonFactory.getGson().toJson(user));
 
     }
 
-    public Teacher getUser() {
+    public Route getUser() {
         PrefManager mPrefManager;
         mPrefManager = new PrefManager(mContext);
-        return GsonFactory.getGson().fromJson(mPrefManager.getString(KEY_SESSION_ID), Teacher.class);
+        return GsonFactory.getGson().fromJson(mPrefManager.getString(KEY_SESSION_ID), Route.class);
     }
 
     public void clearUser() {
