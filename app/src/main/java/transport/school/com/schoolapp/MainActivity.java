@@ -2,11 +2,16 @@ package transport.school.com.schoolapp;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
+import android.view.MenuItem;
 
+import butterknife.BindView;
 import frameworks.appsession.AppBaseApplication;
 import frameworks.basemvp.AppBaseActivity;
 import frameworks.basemvp.IPresenter;
@@ -16,10 +21,13 @@ import frameworks.retrofit.WebServicesWrapper;
 import retrofit2.Response;
 import transport.school.com.schoolapp.bean.ActiveRouteReply;
 import transport.school.com.schoolapp.bean.Route;
+import transport.school.com.schoolapp.bean.RouteReply;
 public class MainActivity extends AppBaseActivity {
     SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private MapViewFragment mapFragment;
+    @BindView(R.id.tabs)
+    TabLayout mMainTab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +60,7 @@ public class MainActivity extends AppBaseActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mMainTab.setupWithViewPager(mViewPager);
     }
 
     @Override
@@ -110,6 +119,18 @@ public class MainActivity extends AppBaseActivity {
         public int getCount() {
             return 2;
         }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return "Navigation";
+                case 1:
+                    return "Attendence";
+            }
+            return "Attendence";
+        }
     }
 
     @Override
@@ -123,5 +144,29 @@ public class MainActivity extends AppBaseActivity {
         if(mapFragment != null) {
             mapFragment.onLocationChanged();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.endroute_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Route route = new Route();
+        route.setRouteid(AppBaseApplication.getApplication().getRoute().getRouteid());
+        route.setmMorningEvening(AppBaseApplication.getApplication().getUser().getmMorningEvening());
+        WebServicesWrapper.getInstance().stopRoute(route, new ResponseResolver<RouteReply>() {
+            @Override
+            public void onSuccess(RouteReply routeReply, Response response) {
+                startActivity(new Intent(getContext(), StartRouteActivity.class));
+            }
+
+            @Override
+            public void onFailure(RestError error, String msg) {
+            }
+        });
+        return super.onOptionsItemSelected(item);
     }
 }

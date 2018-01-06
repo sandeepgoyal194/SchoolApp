@@ -91,7 +91,7 @@ public class MapViewFragment extends Fragment {
                     } else {
                         final Route route = AppBaseApplication.getApplication().getRoute();
                         route.setmMorningEvening("");
-                        Toast.makeText(getContext(), "Morning Route Not Available", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Evening Route Not Available", Toast.LENGTH_LONG).show();
                         WebServicesWrapper.getInstance().stopRoute(route, new ResponseResolver<RouteReply>() {
                             @Override
                             public void onSuccess(RouteReply routeReply, Response response) {
