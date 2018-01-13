@@ -1,6 +1,9 @@
 package transport.school.com.schoolapp;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -20,6 +23,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -52,6 +56,7 @@ public class MapViewFragment extends Fragment {
     private MarkerOptions mMarkerOptions = null;
     private Marker mMarker = null;
     IconGenerator iconFactory;// = new IconGenerator(this);
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.location_fragment, container, false);
@@ -132,11 +137,11 @@ public class MapViewFragment extends Fragment {
 
     public void drawRoute(final List<Routestop> list) {
         final List<LatLng> latLngs = new ArrayList<>();
-        for(Routestop routestop: list) {
+        for (Routestop routestop : list) {
             latLngs.add(new LatLng(Double.parseDouble(routestop.getLatitude()), Double.parseDouble(routestop.getLongitude())));
         }
-        final LatLng origin = new LatLng(latLngs.get(0).latitude,latLngs.get(0).longitude);
-        final LatLng destination = new LatLng(latLngs.get(list.size()-1).latitude,latLngs.get(list.size()-1).longitude);
+        final LatLng origin = new LatLng(latLngs.get(0).latitude, latLngs.get(0).longitude);
+        final LatLng destination = new LatLng(latLngs.get(list.size() - 1).latitude, latLngs.get(list.size() - 1).longitude);
         GoogleDirection.withServerKey("AIzaSyAUmVRXx43uVLZomeU1tRR5OYYkGuW6bew")
                 .from(origin)
                 .and(latLngs)
@@ -148,14 +153,13 @@ public class MapViewFragment extends Fragment {
                         int i = 0;
                         if (direction.isOK()) {
                             com.akexorcist.googledirection.model.Route route = direction.getRouteList().get(0);
-
                             iconFactory.setColor(Color.GREEN);
-                            addIcon(iconFactory,list.get(i++).getStopname(),origin);
+                            addIcon(iconFactory, list.get(i++).getStopname(), origin);
                             iconFactory.setColor(Color.RED);
-                            addIcon(iconFactory,list.get(list.size()-1).getStopname(),destination);
-                            for (LatLng position : latLngs.subList(1,list.size()-1)) {
+                            addIcon(iconFactory, list.get(list.size() - 1).getStopname(), destination);
+                            for (LatLng position : latLngs.subList(1, list.size() - 1)) {
                                 iconFactory.setColor(Color.BLUE);
-                                addIcon(iconFactory,list.get(i++).getStopname(),position);
+                                addIcon(iconFactory, list.get(i++).getStopname(), position);
                             }
                             for (Leg leg : route.getLegList()) {
                                 //List<Step> stepList = leg.getStepList();
@@ -179,9 +183,9 @@ public class MapViewFragment extends Fragment {
                 icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(text))).
                 position(position).
                 anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
-
         googleMap.addMarker(markerOptions);
     }
+
     private void setCameraWithCoordinationBounds(com.akexorcist.googledirection.model.Route route) {
         LatLng southwest = route.getBound().getSouthwestCoordination().getCoordination();
         LatLng northeast = route.getBound().getNortheastCoordination().getCoordination();
@@ -189,14 +193,14 @@ public class MapViewFragment extends Fragment {
         googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
     }
 
-    void setLocationOnMap(Locations location) {
+    void setLocationOnMap(Locations location, float bearing) {
         if (googleMap == null) {
             Log.i(TAG, "Map is null");
             return;
         }
         LatLng currentLocationLatLong = new LatLng(location.getLattitude(), location.getLongitude());
         if (mMarkerOptions == null || !mMarker.isVisible()) {
-            mMarkerOptions = new MarkerOptions().position(currentLocationLatLong);
+            mMarkerOptions = new MarkerOptions().icon(getCarMapIcon(R.drawable.car_icon)).rotation(bearing).position(currentLocationLatLong);
             mMarker = googleMap.addMarker(mMarkerOptions);
         } else if (!mMarker.getPosition().equals(currentLocationLatLong)) {
             mMarker.setPosition(currentLocationLatLong);
@@ -233,8 +237,16 @@ public class MapViewFragment extends Fragment {
         mMapView.onLowMemory();
     }
 
-    public void onLocationChanged() {
+    Locations prevLocations = null;
+
+    public void onLocationChanged(Location location) {
         Locations locations = LocationManagerService.getInstance().getCurrentLocation();
-        setLocationOnMap(locations);
+        setLocationOnMap(locations, location.getBearing());
+    }
+
+    private BitmapDescriptor getCarMapIcon(int resourceId) {
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), resourceId);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, getResources().getDimensionPixelSize(R.dimen.car_marker_width), getResources().getDimensionPixelSize(R.dimen.car_marker_height), false);
+        return BitmapDescriptorFactory.fromBitmap(resizedBitmap);
     }
 }
