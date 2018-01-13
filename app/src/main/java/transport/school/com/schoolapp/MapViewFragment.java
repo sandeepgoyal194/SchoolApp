@@ -26,6 +26,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.ui.IconGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,17 +49,16 @@ public class MapViewFragment extends Fragment {
     private static final String TAG = "SchoolApp";
     MapView mMapView;
     private GoogleMap googleMap;
-    private List<Marker> markers = new ArrayList<Marker>();
-    ArrayList<LatLng> latLngs = new ArrayList<>();
     private MarkerOptions mMarkerOptions = null;
     private Marker mMarker = null;
-
+    IconGenerator iconFactory;// = new IconGenerator(this);
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.location_fragment, container, false);
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-        mMapView.onResume(); // needed to get the map to display immediately
+        mMapView.onResume();
+        iconFactory = new IconGenerator(getContext());// needed to get the map to display immediately
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
         } catch (Exception e) {
@@ -115,12 +115,8 @@ public class MapViewFragment extends Fragment {
                     WebServicesWrapper.getInstance().getRoute(stop, new ResponseResolver<StopResponse>() {
                         @Override
                         public void onSuccess(StopResponse stopResponse, Response response) {
-                            latLngs.clear();
                             List<Routestop> routestops = stopResponse.getRoutestops();
-                            for (Routestop routestop : routestops) {
-                                latLngs.add(new LatLng(Double.parseDouble(routestop.getLatitude()), Double.parseDouble(routestop.getLongitude())));
-                            }
-                            drawRoute(latLngs);
+                            drawRoute(routestops);
                         }
 
                         @Override
@@ -134,23 +130,32 @@ public class MapViewFragment extends Fragment {
         return rootView;
     }
 
-    public void drawRoute(final List<LatLng> list) {
-        final LatLng origin = new LatLng(list.get(0).latitude, list.get(0).longitude);
-        final LatLng destination = new LatLng(list.get(list.size() - 1).latitude, list.get(list.size() - 1).longitude);
+    public void drawRoute(final List<Routestop> list) {
+        final List<LatLng> latLngs = new ArrayList<>();
+        for(Routestop routestop: list) {
+            latLngs.add(new LatLng(Double.parseDouble(routestop.getLatitude()), Double.parseDouble(routestop.getLongitude())));
+        }
+        final LatLng origin = new LatLng(latLngs.get(0).latitude,latLngs.get(0).longitude);
+        final LatLng destination = new LatLng(latLngs.get(list.size()-1).latitude,latLngs.get(list.size()-1).longitude);
         GoogleDirection.withServerKey("AIzaSyAUmVRXx43uVLZomeU1tRR5OYYkGuW6bew")
                 .from(origin)
-                .and(list)
+                .and(latLngs)
                 .to(destination)
                 .transportMode(TransportMode.DRIVING)
                 .execute(new DirectionCallback() {
                     @Override
                     public void onDirectionSuccess(Direction direction, String rawBody) {
+                        int i = 0;
                         if (direction.isOK()) {
                             com.akexorcist.googledirection.model.Route route = direction.getRouteList().get(0);
-                            googleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).position(origin));
-                            googleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).position(destination));
-                            for (LatLng position : list.subList(1,list.size()-1)) {
-                                googleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).position(position));
+
+                            iconFactory.setColor(Color.GREEN);
+                            addIcon(iconFactory,list.get(i++).getStopname(),origin);
+                            iconFactory.setColor(Color.RED);
+                            addIcon(iconFactory,list.get(list.size()-1).getStopname(),destination);
+                            for (LatLng position : latLngs.subList(1,list.size()-1)) {
+                                iconFactory.setColor(Color.BLUE);
+                                addIcon(iconFactory,list.get(i++).getStopname(),position);
                             }
                             for (Leg leg : route.getLegList()) {
                                 //List<Step> stepList = leg.getStepList();
@@ -169,6 +174,14 @@ public class MapViewFragment extends Fragment {
                 });
     }
 
+    private void addIcon(IconGenerator iconFactory, CharSequence text, LatLng position) {
+        MarkerOptions markerOptions = new MarkerOptions().
+                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(text))).
+                position(position).
+                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+
+        googleMap.addMarker(markerOptions);
+    }
     private void setCameraWithCoordinationBounds(com.akexorcist.googledirection.model.Route route) {
         LatLng southwest = route.getBound().getSouthwestCoordination().getCoordination();
         LatLng northeast = route.getBound().getNortheastCoordination().getCoordination();
