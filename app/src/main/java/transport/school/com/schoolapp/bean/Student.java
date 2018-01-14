@@ -1,9 +1,11 @@
 
 package transport.school.com.schoolapp.bean;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
-public class Student {
+public class Student implements Comparable<Student>{
 
     @SerializedName("class")
     private String mClass;
@@ -86,4 +88,12 @@ public class Student {
         mStudentname = studentname;
     }
 
+    @Override
+    public int compareTo(@NonNull Student student) {
+        if(getStopid().equals(student.getStopid())) {
+            return 0;
+        }else {
+            return 1;
+        }
+    }
 }

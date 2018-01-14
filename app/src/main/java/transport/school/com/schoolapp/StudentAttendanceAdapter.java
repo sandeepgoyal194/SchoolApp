@@ -9,9 +9,10 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,10 +30,11 @@ import transport.school.com.schoolapp.bean.Student;
 /**
  * Created by Naveen.Goyal on 11/29/2017.
  */
-public class StudentAttendanceAdapter extends RecyclerView.Adapter<StudentAttendanceAdapter.MyViewHolder> {
+public class StudentAttendanceAdapter extends RecyclerView.Adapter<StudentAttendanceAdapter.MyViewHolder> implements StickyRecyclerHeadersAdapter<StudentAttendanceAdapter.StudentListHeaderHolder> {
     private Context mContext;
 
     public void setStudentList(List<Student> studentList) {
+        Collections.sort(studentList);
         this.studentList = studentList;
         notifyDataSetChanged();
     }
@@ -58,7 +60,7 @@ public class StudentAttendanceAdapter extends RecyclerView.Adapter<StudentAttend
 
         public void setStudent(Student student) {
             studentName.setText(student.getStudentname());
-            new GlideImageLoaderImpl(mContext).loadImage(student.getProfilePic(),thumbnail,R.drawable.blank_person);
+            new GlideImageLoaderImpl(mContext).loadImage(student.getProfilePic(), thumbnail, R.drawable.blank_person);
             this.student = student;
         }
 
@@ -94,6 +96,12 @@ public class StudentAttendanceAdapter extends RecyclerView.Adapter<StudentAttend
         }
     }
 
+    public class StudentListHeaderHolder extends RecyclerView.ViewHolder {
+        public StudentListHeaderHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
     public StudentAttendanceAdapter(Context mContext) {
         this.mContext = mContext;
     }
@@ -108,6 +116,24 @@ public class StudentAttendanceAdapter extends RecyclerView.Adapter<StudentAttend
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         holder.setStudent(studentList.get(position));
+    }
+
+    @Override
+    public long getHeaderId(int position) {
+        return Long.parseLong(studentList.get(position).getStudentid());
+    }
+
+    @Override
+    public StudentListHeaderHolder onCreateHeaderViewHolder(ViewGroup parent) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.view_header, parent, false);
+        return new StudentAttendanceAdapter.StudentListHeaderHolder(view);
+    }
+
+    @Override
+    public void onBindHeaderViewHolder(StudentListHeaderHolder holder, int position) {
+        TextView textView = (TextView) holder.itemView;
+        textView.setText(String.valueOf(studentList.get(position).getStudentid()));
     }
 
     @Override

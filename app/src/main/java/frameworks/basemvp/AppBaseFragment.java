@@ -223,14 +223,14 @@ public abstract class AppBaseFragment<T extends IPresenter> extends android.supp
         return isPop;
     }
 
+    public EmptyLayout getEmptyLayout() {
+        return null;
+    }
+
     public void addEmptyLayout() {
         ViewGroup view = (ViewGroup) this.view;
         view.removeAllViews();
         view.addView(getEmptyLayout());
-    }
-
-    public EmptyLayout getEmptyLayout() {
-        return null;
     }
 
 

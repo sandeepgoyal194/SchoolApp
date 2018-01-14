@@ -118,6 +118,7 @@
     <orderEntry type="library" name="joda-time:joda-time:2.9.9:no-tzdb@jar" level="project" />
     <orderEntry type="library" name="com.jakewharton:butterknife-8.5.1" level="project" />
     <orderEntry type="library" name="com.google.android.gms:play-services-basement-11.8.0" level="project" />
+    <orderEntry type="library" name="com.timehop.stickyheadersrecyclerview:library-0.4.3" level="project" />
     <orderEntry type="library" name="android.arch.core:common:1.0.0@jar" level="project" />
     <orderEntry type="library" name="com.android.support:support-core-ui-27.0.2" level="project" />
     <orderEntry type="library" name="com.android.support:support-compat-27.0.2" level="project" />

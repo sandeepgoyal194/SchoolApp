@@ -49,7 +49,7 @@ import transport.school.com.schoolapp.bean.Stop;
 import transport.school.com.schoolapp.bean.StopResponse;
 
 import static transport.school.com.schoolapp.Constants.ZOOM_LEVEL_STREETS;
-public class MapViewFragment extends Fragment {
+public class MapViewFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
     private static final String TAG = "SchoolApp";
     MapView mMapView;
     private GoogleMap googleMap;
@@ -69,10 +69,12 @@ public class MapViewFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         mMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
+                googleMap.setOnMarkerClickListener(MapViewFragment.this);
                 mMarkerOptions = null;
                 String[] sequenceids = null;
                 if (AppBaseApplication.getApplication().isMorningRoute()) {
@@ -154,12 +156,12 @@ public class MapViewFragment extends Fragment {
                         if (direction.isOK()) {
                             com.akexorcist.googledirection.model.Route route = direction.getRouteList().get(0);
                             iconFactory.setColor(Color.GREEN);
-                            addIcon(iconFactory, list.get(i++).getStopname(), origin);
+                            addIcon(iconFactory,list.get(i).getStopname(), list.get(i++).getStopid(), origin);
                             iconFactory.setColor(Color.RED);
-                            addIcon(iconFactory, list.get(list.size() - 1).getStopname(), destination);
+                            addIcon(iconFactory,list.get(list.size() - 1).getStopname(), list.get(list.size() - 1).getStopid(), destination);
                             for (LatLng position : latLngs.subList(1, list.size() - 1)) {
                                 iconFactory.setColor(Color.BLUE);
-                                addIcon(iconFactory, list.get(i++).getStopname(), position);
+                                addIcon(iconFactory,list.get(i).getStopname(), list.get(i++).getStopid(), position);
                             }
                             for (Leg leg : route.getLegList()) {
                                 //List<Step> stepList = leg.getStepList();
@@ -178,12 +180,12 @@ public class MapViewFragment extends Fragment {
                 });
     }
 
-    private void addIcon(IconGenerator iconFactory, CharSequence text, LatLng position) {
+    private void addIcon(IconGenerator iconFactory,String title, CharSequence text, LatLng position) {
         MarkerOptions markerOptions = new MarkerOptions().
-                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(text))).
+                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(title))).
                 position(position).
                 anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
-        googleMap.addMarker(markerOptions);
+        googleMap.addMarker(markerOptions).setTag(text);
     }
 
     private void setCameraWithCoordinationBounds(com.akexorcist.googledirection.model.Route route) {
@@ -248,5 +250,13 @@ public class MapViewFragment extends Fragment {
         Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), resourceId);
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, getResources().getDimensionPixelSize(R.dimen.car_marker_width), getResources().getDimensionPixelSize(R.dimen.car_marker_height), false);
         return BitmapDescriptorFactory.fromBitmap(resizedBitmap);
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Intent i = new Intent(getContext(),StopStudentAttendance.class);
+        i.putExtra(StopStudentAttendance.STOP_ID,marker.getTag().toString());
+        startActivity(i);
+        return false;
     }
 }
