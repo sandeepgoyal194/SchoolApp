@@ -69,7 +69,7 @@ public class StudentAttendanceFragment extends AppBaseFragment {
     }
 
     public void setStudentList(RouteStudentList routeStudentList) {
-        adapter.setStudentList(routeStudentList.getStudents());
+        adapter.setStudentList(routeStudentList.getStudents(), "");
     }
 
     /**

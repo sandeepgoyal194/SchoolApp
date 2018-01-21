@@ -6,6 +6,7 @@ import frameworks.basemvp.AppBaseActivity;
 import frameworks.basemvp.IPresenter;
 public class StopStudentAttendance extends AppBaseActivity {
     public static final String STOP_ID = "STOP_ID";
+    public static final String STOP_NAME = "STOP_NAME";
 
     @Override
     public int getViewToCreate() {
@@ -15,7 +16,7 @@ public class StopStudentAttendance extends AppBaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addFrgment(StopStudentAttendanceFragment.newInstance(getIntent().getStringExtra(STOP_ID)), "Student_Fragment", R.id.container, false);
+        addFrgment(StopStudentAttendanceFragment.newInstance(getIntent().getStringExtra(STOP_ID), getIntent().getStringExtra(STOP_NAME)), "Student_Fragment", R.id.container, false);
     }
 
     @Override
