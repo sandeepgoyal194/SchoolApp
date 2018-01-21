@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
+
 import butterknife.BindView;
 import frameworks.appsession.AppBaseApplication;
 import frameworks.basemvp.AppBaseFragment;
@@ -28,7 +30,7 @@ import transport.school.com.schoolapp.bean.RouteStudentList;
 public class StudentAttendanceFragment extends AppBaseFragment {
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
-    private StudentAttendanceAdapter adapter;
+    protected StudentAttendanceAdapter adapter;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public class StudentAttendanceFragment extends AppBaseFragment {
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new StickyRecyclerHeadersDecoration(adapter));
         prepareStudentList();
     }
 
@@ -56,13 +59,17 @@ public class StudentAttendanceFragment extends AppBaseFragment {
         WebServicesWrapper.getInstance().getStudentListForRoute(AppBaseApplication.getApplication().getRoute(), new ResponseResolver<RouteStudentList>() {
             @Override
             public void onSuccess(RouteStudentList routeStudentList, Response response) {
-                adapter.setStudentList(routeStudentList.getStudents());
+                setStudentList(routeStudentList);
             }
 
             @Override
             public void onFailure(RestError error, String msg) {
             }
         });
+    }
+
+    public void setStudentList(RouteStudentList routeStudentList) {
+        adapter.setStudentList(routeStudentList.getStudents());
     }
 
     /**

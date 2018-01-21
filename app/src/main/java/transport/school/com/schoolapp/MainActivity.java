@@ -144,7 +144,7 @@ public class MainActivity extends AppBaseActivity {
     public void onLocationChanged(Location location) {
         super.onLocationChanged(location);
         if (mapFragment != null) {
-            mapFragment.onLocationChanged();
+            mapFragment.onLocationChanged(location);
         }
     }
 
