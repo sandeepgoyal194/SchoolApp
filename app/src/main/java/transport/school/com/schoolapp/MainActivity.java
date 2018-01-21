@@ -117,7 +117,7 @@ public class MainActivity extends AppBaseActivity {
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Nullable
@@ -128,6 +128,8 @@ public class MainActivity extends AppBaseActivity {
                     return "Navigation";
                 case 1:
                     return "Attendence";
+                case 2:
+                    return "Students Picked";
             }
             return "Attendence";
         }
