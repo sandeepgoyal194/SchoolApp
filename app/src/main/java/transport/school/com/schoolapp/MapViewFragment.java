@@ -186,6 +186,7 @@ public class MapViewFragment extends Fragment implements GoogleMap.OnMarkerClick
                 position(position).
                 anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
         googleMap.addMarker(markerOptions).setTag(text);
+        googleMap.addMarker(markerOptions).setTitle(title);
     }
 
     private void setCameraWithCoordinationBounds(com.akexorcist.googledirection.model.Route route) {
@@ -256,6 +257,7 @@ public class MapViewFragment extends Fragment implements GoogleMap.OnMarkerClick
     public boolean onMarkerClick(Marker marker) {
         Intent i = new Intent(getContext(),StopStudentAttendance.class);
         i.putExtra(StopStudentAttendance.STOP_ID,marker.getTag().toString());
+        i.putExtra(StopStudentAttendance.STOP_NAME, marker.getTitle());
         startActivity(i);
         return false;
     }

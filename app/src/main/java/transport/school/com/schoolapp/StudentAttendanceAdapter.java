@@ -32,10 +32,12 @@ import transport.school.com.schoolapp.bean.Student;
  */
 public class StudentAttendanceAdapter extends RecyclerView.Adapter<StudentAttendanceAdapter.MyViewHolder> implements StickyRecyclerHeadersAdapter<StudentAttendanceAdapter.StudentListHeaderHolder> {
     private Context mContext;
+    private String stopName;
 
-    public void setStudentList(List<Student> studentList) {
+    public void setStudentList(List<Student> studentList, String stopName) {
         Collections.sort(studentList);
         this.studentList = studentList;
+        this.stopName = stopName;
         notifyDataSetChanged();
     }
 
@@ -133,7 +135,7 @@ public class StudentAttendanceAdapter extends RecyclerView.Adapter<StudentAttend
     @Override
     public void onBindHeaderViewHolder(StudentListHeaderHolder holder, int position) {
         TextView textView = (TextView) holder.itemView;
-        textView.setText(String.valueOf(studentList.get(position).getStudentid()));
+        textView.setText(stopName/*String.valueOf(studentList.get(position).getStudentid())*/);
     }
 
     @Override

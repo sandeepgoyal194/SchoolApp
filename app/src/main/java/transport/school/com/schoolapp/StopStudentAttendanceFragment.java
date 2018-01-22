@@ -22,16 +22,19 @@ import transport.school.com.schoolapp.bean.Student;
  */
 public class StopStudentAttendanceFragment extends StudentAttendanceFragment {
     private static final String STOP_ID = "STOP_ID";
+    private static final String STOP_NAME = "STOP_NAME";
     private String mStopId;
+    private String mStopName;
 
     public StopStudentAttendanceFragment() {
         // Required empty public constructor
     }
 
-    public static StopStudentAttendanceFragment newInstance(String param1) {
+    public static StopStudentAttendanceFragment newInstance(String param1, String param2) {
         StopStudentAttendanceFragment fragment = new StopStudentAttendanceFragment();
         Bundle args = new Bundle();
         args.putString(STOP_ID, param1);
+        args.putString(STOP_NAME, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -41,6 +44,7 @@ public class StopStudentAttendanceFragment extends StudentAttendanceFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mStopId = getArguments().getString(STOP_ID);
+            mStopName = getArguments().getString(STOP_NAME);
         }
         Stop stop = new Stop();
         stop.setStopid(mStopId);
@@ -68,7 +72,7 @@ public class StopStudentAttendanceFragment extends StudentAttendanceFragment {
         if(studentList.size() <= 0) {
             addEmptyLayout();
         }else {
-            adapter.setStudentList(studentList);
+            adapter.setStudentList(studentList, mStopName);
         }
     }
 
