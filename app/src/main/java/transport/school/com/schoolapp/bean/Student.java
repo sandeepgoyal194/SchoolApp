@@ -24,6 +24,18 @@ public class Student implements Comparable<Student>{
     @SerializedName("studentname")
     private String mStudentname;
 
+    @SerializedName("attendance")
+
+    private int mAttendance;
+
+    public int getmAttendance() {
+        return mAttendance;
+    }
+
+    public void setmAttendance(int mAttendance) {
+        this.mAttendance = mAttendance;
+    }
+
     public String getmClass() {
         return mClass;
     }

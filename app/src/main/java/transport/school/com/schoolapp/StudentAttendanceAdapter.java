@@ -18,6 +18,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
+import frameworks.appsession.AppBaseApplication;
 import frameworks.customlayout.Utils;
 import frameworks.retrofit.ResponseResolver;
 import frameworks.retrofit.RestError;
@@ -26,6 +27,8 @@ import frameworks.retrofit.imageloader.GlideImageLoaderImpl;
 import retrofit2.Response;
 import transport.school.com.schoolapp.bean.AttendanceRecord;
 import transport.school.com.schoolapp.bean.AttendanceUpdateResponse;
+import transport.school.com.schoolapp.bean.Stop;
+import transport.school.com.schoolapp.bean.StopResponse;
 import transport.school.com.schoolapp.bean.Student;
 /**
  * Created by Naveen.Goyal on 11/29/2017.
@@ -34,12 +37,16 @@ public class StudentAttendanceAdapter extends RecyclerView.Adapter<StudentAttend
     private Context mContext;
     private String stopName;
 
+    onStudentClick onStudentClick;
+
+
     public void setStudentList(List<Student> studentList, String stopName) {
         Collections.sort(studentList);
         this.studentList = studentList;
         this.stopName = stopName;
         notifyDataSetChanged();
     }
+
 
     private List<Student> studentList = new ArrayList<>();
 
@@ -64,20 +71,25 @@ public class StudentAttendanceAdapter extends RecyclerView.Adapter<StudentAttend
             studentName.setText(student.getStudentname());
             new GlideImageLoaderImpl(mContext).loadImage(student.getProfilePic(), thumbnail, R.drawable.blank_person);
             this.student = student;
+            if(student.getmAttendance() != 0) {
+                checkbox.setChecked(true);
+            }
         }
 
         @OnCheckedChanged(R.id.checkbox)
         void onChecked(boolean checked) {
+            onStudentClick.onStudentClick();
             AttendanceRecord attendanceRecord;
             attendanceRecord = new AttendanceRecord();
             attendanceRecord.setStudentid(student.getStudentid());
             attendanceRecord.setSchoolid(student.getSchoolid());
-            attendanceRecord.setMorningevening("e");
+            attendanceRecord.setMorningevening(AppBaseApplication.getApplication().getRoute().getmMorningEvening());
             attendanceRecord.setAttendancedate(Utils.getCurrentDate());
             if (checked) {
                 WebServicesWrapper.getInstance().postStudentAttendence(attendanceRecord, new ResponseResolver<AttendanceUpdateResponse>() {
                     @Override
                     public void onSuccess(AttendanceUpdateResponse attendanceUpdateResponse, Response response) {
+
                     }
 
                     @Override
@@ -104,8 +116,9 @@ public class StudentAttendanceAdapter extends RecyclerView.Adapter<StudentAttend
         }
     }
 
-    public StudentAttendanceAdapter(Context mContext) {
+    public StudentAttendanceAdapter(Context mContext,onStudentClick onStudentClick) {
         this.mContext = mContext;
+        this.onStudentClick = onStudentClick;
     }
 
     @Override
@@ -134,12 +147,28 @@ public class StudentAttendanceAdapter extends RecyclerView.Adapter<StudentAttend
 
     @Override
     public void onBindHeaderViewHolder(StudentListHeaderHolder holder, int position) {
-        TextView textView = (TextView) holder.itemView;
-        textView.setText(stopName/*String.valueOf(studentList.get(position).getStudentid())*/);
+        final TextView textView = (TextView) holder.itemView;
+        Stop stop = new Stop();
+        stop.setStopid(studentList.get(position).getStopid());
+        WebServicesWrapper.getInstance().getRoute(stop, new ResponseResolver<StopResponse>() {
+            @Override
+            public void onSuccess(StopResponse stopResponse, Response response) {
+                textView.setText(stopResponse.getRoute().getRoutenumber()/*String.valueOf(studentList.get(position).getStudentid())*/);
+            }
+
+            @Override
+            public void onFailure(RestError error, String msg) {
+            }
+        });
+
     }
 
     @Override
     public int getItemCount() {
         return studentList.size();
+    }
+
+    public interface onStudentClick {
+        public void onStudentClick();
     }
 }

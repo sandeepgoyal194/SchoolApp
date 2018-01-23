@@ -14,20 +14,26 @@ import android.view.ViewGroup;
 
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import frameworks.appsession.AppBaseApplication;
 import frameworks.basemvp.AppBaseFragment;
 import frameworks.basemvp.IPresenter;
+import frameworks.customlayout.Utils;
 import frameworks.retrofit.ResponseResolver;
 import frameworks.retrofit.RestError;
 import frameworks.retrofit.WebServicesWrapper;
 import retrofit2.Response;
 import transport.school.com.schoolapp.bean.ActiveRouteReply;
+import transport.school.com.schoolapp.bean.AttendanceRecord;
 import transport.school.com.schoolapp.bean.RouteStudentList;
+import transport.school.com.schoolapp.bean.Student;
 /**
  * Created by Naveen.Goyal on 11/29/2017.
  */
-public class StudentAttendanceFragment extends AppBaseFragment {
+public class StudentAttendanceFragment extends AppBaseFragment implements StudentAttendanceAdapter.onStudentClick {
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
     protected StudentAttendanceAdapter adapter;
@@ -35,13 +41,18 @@ public class StudentAttendanceFragment extends AppBaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        adapter = new StudentAttendanceAdapter(getContext());
+        adapter = new StudentAttendanceAdapter(getContext(),this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new StickyRecyclerHeadersDecoration(adapter));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         prepareStudentList();
     }
 
@@ -56,7 +67,11 @@ public class StudentAttendanceFragment extends AppBaseFragment {
     }
 
     private void prepareStudentList() {
-        WebServicesWrapper.getInstance().getStudentListForRoute(AppBaseApplication.getApplication().getRoute(), new ResponseResolver<RouteStudentList>() {
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.setmRouteId(AppBaseApplication.getApplication().getRoute().getRouteid());
+        attendanceRecord.setAttendancedate(Utils.getCurrentDate());
+        attendanceRecord.setMorningevening(AppBaseApplication.getApplication().getRoute().getmMorningEvening());
+        WebServicesWrapper.getInstance().getAttendence(attendanceRecord, new ResponseResolver<RouteStudentList>() {
             @Override
             public void onSuccess(RouteStudentList routeStudentList, Response response) {
                 setStudentList(routeStudentList);
@@ -69,7 +84,18 @@ public class StudentAttendanceFragment extends AppBaseFragment {
     }
 
     public void setStudentList(RouteStudentList routeStudentList) {
-        adapter.setStudentList(routeStudentList.getStudents(), "");
+        List<Student> studentList = new ArrayList<>();
+        for(int i=0;i<routeStudentList.getStudents().size();i++ ) {
+            if(routeStudentList.getStudents().get(i).getmAttendance() == 0) {
+                studentList.add(routeStudentList.getStudents().get(i));
+            }
+        }
+        adapter.setStudentList(studentList, "");
+    }
+
+    @Override
+    public void onStudentClick() {
+        prepareStudentList();
     }
 
     /**

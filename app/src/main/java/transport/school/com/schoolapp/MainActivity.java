@@ -111,6 +111,9 @@ public class MainActivity extends AppBaseActivity {
                     return mapFragment;
                 case 1:
                     return new StudentAttendanceFragment();
+
+                case 2:
+                    return new StudentAbsentFragment();
             }
             return new StudentAttendanceFragment();
         }
