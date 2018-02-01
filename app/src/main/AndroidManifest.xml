@@ -13,7 +13,7 @@
     <application
         android:name="frameworks.appsession.AppBaseApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/launcher_student"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">

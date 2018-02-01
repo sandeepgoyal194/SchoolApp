@@ -155,7 +155,7 @@ public class StudentAttendanceAdapter extends RecyclerView.Adapter<StudentAttend
         WebServicesWrapper.getInstance().getRoute(stop, new ResponseResolver<StopResponse>() {
             @Override
             public void onSuccess(StopResponse stopResponse, Response response) {
-                textView.setText(stopResponse.getRoute().getRoutenumber()/*String.valueOf(studentList.get(position).getStudentid())*/);
+                textView.setText(stopResponse.getStop().getStopname()/*String.valueOf(studentList.get(position).getStudentid())*/);
             }
 
             @Override
