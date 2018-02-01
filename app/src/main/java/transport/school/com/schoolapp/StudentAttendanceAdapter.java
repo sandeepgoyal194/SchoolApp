@@ -63,7 +63,6 @@ public class StudentAttendanceAdapter extends RecyclerView.Adapter<StudentAttend
 
         public MyViewHolder(View view) {
             super(view);
-            ButterKnife.setDebug(true);
             ButterKnife.bind(this, view);
         }
 
@@ -73,12 +72,14 @@ public class StudentAttendanceAdapter extends RecyclerView.Adapter<StudentAttend
             this.student = student;
             if(student.getmAttendance() != 0) {
                 checkbox.setChecked(true);
+            }else {
+                checkbox.setChecked(false);
             }
         }
 
         @OnCheckedChanged(R.id.checkbox)
         void onChecked(boolean checked) {
-            onStudentClick.onStudentClick();
+
             AttendanceRecord attendanceRecord;
             attendanceRecord = new AttendanceRecord();
             attendanceRecord.setStudentid(student.getStudentid());
@@ -89,7 +90,7 @@ public class StudentAttendanceAdapter extends RecyclerView.Adapter<StudentAttend
                 WebServicesWrapper.getInstance().postStudentAttendence(attendanceRecord, new ResponseResolver<AttendanceUpdateResponse>() {
                     @Override
                     public void onSuccess(AttendanceUpdateResponse attendanceUpdateResponse, Response response) {
-
+                        onStudentClick.onStudentClick();
                     }
 
                     @Override
@@ -100,6 +101,7 @@ public class StudentAttendanceAdapter extends RecyclerView.Adapter<StudentAttend
                 WebServicesWrapper.getInstance().postStudentAbsent(attendanceRecord, new ResponseResolver<AttendanceUpdateResponse>() {
                     @Override
                     public void onSuccess(AttendanceUpdateResponse attendanceUpdateResponse, Response response) {
+                        onStudentClick.onStudentClick();
                     }
 
                     @Override

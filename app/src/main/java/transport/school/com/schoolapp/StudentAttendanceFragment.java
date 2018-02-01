@@ -50,11 +50,15 @@ public class StudentAttendanceFragment extends AppBaseFragment implements Studen
         recyclerView.addItemDecoration(new StickyRecyclerHeadersDecoration(adapter));
     }
 
+    public void imVisible() {
+        prepareStudentList();
+    }
     @Override
     public void onResume() {
         super.onResume();
         prepareStudentList();
     }
+
 
     @Override
     public View getView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

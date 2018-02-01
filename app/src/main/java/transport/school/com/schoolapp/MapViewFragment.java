@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,6 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import frameworks.appsession.AppBaseApplication;
+import frameworks.basemvp.AppBaseFragment;
+import frameworks.basemvp.IPresenter;
 import frameworks.locationmanager.LocationManagerService;
 import frameworks.locationmanager.Locations;
 import frameworks.retrofit.ResponseResolver;
@@ -49,7 +52,7 @@ import transport.school.com.schoolapp.bean.Stop;
 import transport.school.com.schoolapp.bean.StopResponse;
 
 import static transport.school.com.schoolapp.Constants.ZOOM_LEVEL_STREETS;
-public class MapViewFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
+public class MapViewFragment extends AppBaseFragment implements GoogleMap.OnMarkerClickListener {
     private static final String TAG = "SchoolApp";
     MapView mMapView;
     private GoogleMap googleMap;
@@ -135,6 +138,16 @@ public class MapViewFragment extends Fragment implements GoogleMap.OnMarkerClick
             }
         });
         return rootView;
+    }
+
+    @Override
+    public View getView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return null;
+    }
+
+    @Override
+    public IPresenter getPresenter() {
+        return null;
     }
 
     public void drawRoute(final List<Routestop> list) {

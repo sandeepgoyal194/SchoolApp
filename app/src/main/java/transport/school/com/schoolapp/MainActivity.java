@@ -4,7 +4,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -14,6 +13,7 @@ import android.view.MenuItem;
 import butterknife.BindView;
 import frameworks.appsession.AppBaseApplication;
 import frameworks.basemvp.AppBaseActivity;
+import frameworks.basemvp.AppBaseFragment;
 import frameworks.basemvp.IPresenter;
 import frameworks.retrofit.ResponseResolver;
 import frameworks.retrofit.RestError;
@@ -54,18 +54,40 @@ public class MainActivity extends AppBaseActivity {
             }
         });
         super.onCreate(savedInstanceState);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
     }
 
     void loadFragments() {
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.view_pager);
+
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mMainTab.setupWithViewPager(mViewPager);
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            public void onPageSelected(int pageNumber) {
+                // Just define a callback method in your fragment and call it like this!
+                mSectionsPagerAdapter.getItem(pageNumber).imVisible();
+
+            }
+
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+                // TODO Auto-generated method stub
+
+            }
+
+            public void onPageScrollStateChanged(int arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+
         WebServicesWrapper.getInstance().getActiveRoute(AppBaseApplication.getApplication().getRoute(), new ResponseResolver<ActiveRouteReply>() {
             @Override
             public void onSuccess(ActiveRouteReply activeRouteReply, Response response) {
@@ -103,17 +125,18 @@ public class MainActivity extends AppBaseActivity {
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
-
+ StudentAttendanceFragment studentAttendanceFragment = new StudentAttendanceFragment();
+        StudentAbsentFragment studentAbsentFragment = new StudentAbsentFragment();
         @Override
-        public Fragment getItem(int position) {
+        public AppBaseFragment getItem(int position) {
             switch (position) {
                 case 0:
                     return mapFragment;
                 case 1:
-                    return new StudentAttendanceFragment();
+                    return studentAttendanceFragment;
 
                 case 2:
-                    return new StudentAbsentFragment();
+                    return studentAbsentFragment;
             }
             return new StudentAttendanceFragment();
         }
@@ -179,4 +202,7 @@ public class MainActivity extends AppBaseActivity {
         }
         return true;
     }
-}
+
+
+
+        }

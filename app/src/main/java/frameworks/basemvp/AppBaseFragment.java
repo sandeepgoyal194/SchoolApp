@@ -47,6 +47,10 @@ public abstract class AppBaseFragment<T extends IPresenter> extends android.supp
         setMenuIcons();
     }
 
+    public void imVisible() {
+
+    }
+
     public void onLeftMenuClick() {
 
     }
