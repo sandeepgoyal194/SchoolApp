@@ -11,6 +11,16 @@ public class Routestop {
     @SerializedName("stopname")
     private String mStopname;
 
+    private boolean isMessageSent;
+
+    public boolean isMessageSent() {
+        return isMessageSent;
+    }
+
+    public void setMessageSent(boolean messageSent) {
+        isMessageSent = messageSent;
+    }
+
     public String getLatitude() {
         return mLatitude;
     }

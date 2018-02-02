@@ -198,6 +198,8 @@ public class MainActivity extends AppBaseActivity {
                     }
                 });
                 return super.onOptionsItemSelected(item);
+            case R.id.sendMsg:
+                startActivity(new Intent(this,SendMessage.class));
             case R.id.logout:
         }
         return true;

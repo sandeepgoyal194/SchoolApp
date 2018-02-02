@@ -45,6 +45,7 @@ import frameworks.retrofit.ResponseResolver;
 import frameworks.retrofit.RestError;
 import frameworks.retrofit.WebServicesWrapper;
 import retrofit2.Response;
+import transport.school.com.schoolapp.bean.NotificationBean;
 import transport.school.com.schoolapp.bean.Route;
 import transport.school.com.schoolapp.bean.RouteReply;
 import transport.school.com.schoolapp.bean.Routestop;
@@ -149,12 +150,15 @@ public class MapViewFragment extends AppBaseFragment implements GoogleMap.OnMark
     public IPresenter getPresenter() {
         return null;
     }
-
+    List<Routestop> routestops = new ArrayList<>();
     public void drawRoute(final List<Routestop> list) {
+        routestops = list;
         final List<LatLng> latLngs = new ArrayList<>();
         for (Routestop routestop : list) {
             latLngs.add(new LatLng(Double.parseDouble(routestop.getLatitude()), Double.parseDouble(routestop.getLongitude())));
         }
+
+        NotificationSender.getmInstance().setRoutestops(routestops);
         final LatLng origin = new LatLng(latLngs.get(0).latitude, latLngs.get(0).longitude);
         final LatLng destination = new LatLng(latLngs.get(list.size() - 1).latitude, latLngs.get(list.size() - 1).longitude);
         GoogleDirection.withServerKey("AIzaSyAUmVRXx43uVLZomeU1tRR5OYYkGuW6bew")
@@ -257,6 +261,7 @@ public class MapViewFragment extends AppBaseFragment implements GoogleMap.OnMark
 
     public void onLocationChanged(Location location) {
         Locations locations = LocationManagerService.getInstance().getCurrentLocation();
+        NotificationSender.getmInstance().setCurrentLatLng(new LatLng(location.getLatitude(),location.getLongitude()));
         setLocationOnMap(locations, location.getBearing());
     }
 
