@@ -19,6 +19,9 @@ public class Student implements Comparable<Student>{
     private String mSchoolname;
     @SerializedName("stopid")
     private String mStopid;
+
+    @SerializedName("stopname")
+    private String mStopName;
     @SerializedName("studentid")
     private String mStudentid;
     @SerializedName("studentname")
@@ -27,6 +30,14 @@ public class Student implements Comparable<Student>{
     @SerializedName("attendance")
 
     private int mAttendance;
+
+    public String getmStopName() {
+        return mStopName;
+    }
+
+    public void setmStopName(String mStopName) {
+        this.mStopName = mStopName;
+    }
 
     public int getmAttendance() {
         return mAttendance;

@@ -150,21 +150,8 @@ public class StudentAttendanceAdapter extends RecyclerView.Adapter<StudentAttend
     @Override
     public void onBindHeaderViewHolder(StudentListHeaderHolder holder, int position) {
         final TextView textView = (TextView) holder.itemView;
-        Stop stop = new Stop();
-        stop.setStopid(studentList.get(position).getStopid());
-        WebServicesWrapper.getInstance().getRoute(stop, new ResponseResolver<StopResponse>() {
-            @Override
-            public void onSuccess(StopResponse stopResponse, Response response) {
-                textView.setText(stopResponse.getStop().getStopname()/*String.valueOf(studentList.get(position).getStudentid())*/);
-            }
-
-            @Override
-            public void onFailure(RestError error, String msg) {
-            }
-        });
-
+        textView.setText(studentList.get(position).getmStopName()/*String.valueOf(studentList.get(position).getStudentid())*/);
     }
-
     @Override
     public int getItemCount() {
         return studentList.size();
