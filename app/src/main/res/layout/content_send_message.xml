@@ -6,11 +6,15 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="transport.school.com.schoolapp.SendMessage"
-    tools:showIn="@layout/activity_send_message"
     android:orientation="vertical">
+    <include layout="@layout/toolbar"/>
     <EditText
         android:id="@+id/edt_msg"
+        android:layout_margin="2dp"
+        android:padding="5dp"
+        android:gravity="top"
         android:layout_width="match_parent"
+        android:background="@drawable/edt_background"
         android:layout_height="200dp" />
     <Button
         android:id="@+id/btn_sendmsg"

@@ -43,8 +43,9 @@
 
                     <AutoCompleteTextView
                         android:id="@+id/email"
+                        android:background="@drawable/edt_background"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
                         android:hint="@string/prompt_email"
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
@@ -59,8 +60,9 @@
                     <EditText
                         android:id="@+id/password"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
                         android:hint="@string/prompt_password"
+                        android:background="@drawable/edt_background"
                         android:imeActionId="@+id/login"
                         android:imeActionLabel="@string/action_sign_in_short"
                         android:imeOptions="actionUnspecified"

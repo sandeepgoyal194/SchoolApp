@@ -44,7 +44,6 @@ public class StudentAttendanceFragment extends AppBaseFragment implements Studen
         adapter = new StudentAttendanceAdapter(getContext(),this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new StickyRecyclerHeadersDecoration(adapter));

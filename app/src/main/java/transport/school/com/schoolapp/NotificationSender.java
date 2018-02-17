@@ -38,6 +38,9 @@ public class NotificationSender {
         return  mInstance;
     }
     public void setCurrentLatLng(com.google.android.gms.maps.model.LatLng latLng) {
+        if(routestops.size()<=0) {
+            return;
+        }
         GeoApiContext context = new GeoApiContext.Builder()
                 .apiKey("AIzaSyAUmVRXx43uVLZomeU1tRR5OYYkGuW6bew")
                 .build();
@@ -63,11 +66,12 @@ public class NotificationSender {
         DistanceMatrixRow[] distanceMatrixRow = matrix.rows;
         for(int i =0;i<distanceMatrixRow.length;i++) {
             DistanceMatrixRow distanceMatrixRoww = distanceMatrixRow[i];
-            if(distanceMatrixRoww.elements[i].duration.inSeconds < 60*10) {
+            for(int j=0;j<distanceMatrixRoww.elements.length;j++)
+            if(distanceMatrixRoww.elements[j].duration.inSeconds < 60*10) {
                 NotificationBean notificationBean = new NotificationBean();
                 notificationBean.setMessage("Bus reaching within 10 Minutes");
-                notificationBean.setStopid(routestops.get(i).getStopid());
-                final int finalI = i;
+                notificationBean.setStopid(routestops.get(j).getStopid());
+                final int finalI = j;
                 WebServicesWrapper.getInstance().pushNotificatione(notificationBean, new ResponseResolver<String>() {
                     @Override
                     public void onSuccess(String s, Response response) {

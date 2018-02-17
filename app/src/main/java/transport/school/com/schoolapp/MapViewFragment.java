@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,8 +30,17 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.DistanceMatrixApi;
+import com.google.maps.DistanceMatrixApiRequest;
+import com.google.maps.GeoApiContext;
 import com.google.maps.android.ui.IconGenerator;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.DistanceMatrix;
+import com.google.maps.model.DistanceMatrixRow;
+import com.google.maps.model.Duration;
+import com.google.maps.model.TravelMode;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +53,6 @@ import frameworks.retrofit.ResponseResolver;
 import frameworks.retrofit.RestError;
 import frameworks.retrofit.WebServicesWrapper;
 import retrofit2.Response;
-import transport.school.com.schoolapp.bean.NotificationBean;
 import transport.school.com.schoolapp.bean.Route;
 import transport.school.com.schoolapp.bean.RouteReply;
 import transport.school.com.schoolapp.bean.Routestop;
@@ -73,7 +80,6 @@ public class MapViewFragment extends AppBaseFragment implements GoogleMap.OnMark
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         mMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap mMap) {
@@ -126,7 +132,7 @@ public class MapViewFragment extends AppBaseFragment implements GoogleMap.OnMark
                     WebServicesWrapper.getInstance().getRoute(stop, new ResponseResolver<StopResponse>() {
                         @Override
                         public void onSuccess(StopResponse stopResponse, Response response) {
-                            List<Routestop> routestops = stopResponse.getRoutestops();
+                           routestops = stopResponse.getRoutestops();
                             drawRoute(routestops);
                         }
 
@@ -150,16 +156,18 @@ public class MapViewFragment extends AppBaseFragment implements GoogleMap.OnMark
     public IPresenter getPresenter() {
         return null;
     }
+
     List<Routestop> routestops = new ArrayList<>();
+
     public void drawRoute(final List<Routestop> list) {
-        routestops = list;
+
         final List<LatLng> latLngs = new ArrayList<>();
         for (Routestop routestop : list) {
             latLngs.add(new LatLng(Double.parseDouble(routestop.getLatitude()), Double.parseDouble(routestop.getLongitude())));
         }
-
         NotificationSender.getmInstance().setRoutestops(routestops);
-        final LatLng origin = new LatLng(latLngs.get(0).latitude, latLngs.get(0).longitude);
+        Locations location = LocationManagerService.getInstance().getCurrentLocation();
+        final LatLng origin = location != null ? new LatLng(location.getLattitude(), location.getLongitude()) : new LatLng(latLngs.get(0).latitude, latLngs.get(0).longitude);
         final LatLng destination = new LatLng(latLngs.get(list.size() - 1).latitude, latLngs.get(list.size() - 1).longitude);
         GoogleDirection.withServerKey("AIzaSyAUmVRXx43uVLZomeU1tRR5OYYkGuW6bew")
                 .from(origin)
@@ -172,13 +180,14 @@ public class MapViewFragment extends AppBaseFragment implements GoogleMap.OnMark
                         int i = 0;
                         if (direction.isOK()) {
                             com.akexorcist.googledirection.model.Route route = direction.getRouteList().get(0);
+                            LatLng origin = new LatLng(latLngs.get(0).latitude, latLngs.get(0).longitude);
                             iconFactory.setColor(Color.GREEN);
-                            addIcon(iconFactory,list.get(i).getStopname(), list.get(i++).getStopid(), origin);
+                            addIcon(iconFactory, list.get(i).getStopname(), list.get(i++).getStopid(), origin);
                             iconFactory.setColor(Color.RED);
-                            addIcon(iconFactory,list.get(list.size() - 1).getStopname(), list.get(list.size() - 1).getStopid(), destination);
+                            addIcon(iconFactory, list.get(list.size() - 1).getStopname(), list.get(list.size() - 1).getStopid(), destination);
                             for (LatLng position : latLngs.subList(1, list.size() - 1)) {
                                 iconFactory.setColor(Color.BLUE);
-                                addIcon(iconFactory,list.get(i).getStopname(), list.get(i++).getStopid(), position);
+                                addIcon(iconFactory, list.get(i).getStopname(), list.get(i++).getStopid(), position);
                             }
                             for (Leg leg : route.getLegList()) {
                                 //List<Step> stepList = leg.getStepList();
@@ -197,13 +206,15 @@ public class MapViewFragment extends AppBaseFragment implements GoogleMap.OnMark
                 });
     }
 
-    private void addIcon(IconGenerator iconFactory,String title, CharSequence text, LatLng position) {
+    private void addIcon(IconGenerator iconFactory, String title, CharSequence text, LatLng position) {
         MarkerOptions markerOptions = new MarkerOptions().
                 icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(title))).
                 position(position).
                 anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
-        googleMap.addMarker(markerOptions).setTag(text);
-        googleMap.addMarker(markerOptions).setTitle(title);
+        Marker marker = googleMap.addMarker(markerOptions);
+        marker.setTag(text);
+        marker.setTitle(title);
+        markers.add(marker);
     }
 
     private void setCameraWithCoordinationBounds(com.akexorcist.googledirection.model.Route route) {
@@ -219,12 +230,18 @@ public class MapViewFragment extends AppBaseFragment implements GoogleMap.OnMark
             return;
         }
         LatLng currentLocationLatLong = new LatLng(location.getLattitude(), location.getLongitude());
-        if (mMarkerOptions == null || !mMarker.isVisible()) {
-            mMarkerOptions = new MarkerOptions().icon(getCarMapIcon(R.drawable.car_icon)).rotation(bearing).position(currentLocationLatLong);
-            mMarker = googleMap.addMarker(mMarkerOptions);
-        } else if (!mMarker.getPosition().equals(currentLocationLatLong)) {
-            mMarker.setPosition(currentLocationLatLong);
+        if (mMarker != null && !mMarker.getPosition().equals(currentLocationLatLong)) {
+            if (googleMap != null) {
+                googleMap.clear();
+            }
+        }else {
+            if(mMarker != null) {
+                return;
+            }
         }
+        mMarkerOptions = new MarkerOptions().icon(getCarMapIcon(R.drawable.car_icon))/*.rotation(bearing)*/.position(currentLocationLatLong);
+        mMarker = googleMap.addMarker(mMarkerOptions);
+        drawRoute(routestops);
         //setZoomLevel(currentLocationLatLong);
     }
 
@@ -260,9 +277,70 @@ public class MapViewFragment extends AppBaseFragment implements GoogleMap.OnMark
     Locations prevLocations = null;
 
     public void onLocationChanged(Location location) {
+        for(Marker marker:markers) {
+            marker.remove();
+        }
+        markers.clear();
         Locations locations = LocationManagerService.getInstance().getCurrentLocation();
-        NotificationSender.getmInstance().setCurrentLatLng(new LatLng(location.getLatitude(),location.getLongitude()));
+        NotificationSender.getmInstance().setCurrentLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
         setLocationOnMap(locations, location.getBearing());
+        addmarker(location);
+    }
+
+    private void addmarker(Location location) {
+        final List<LatLng> latLngs = new ArrayList<>();
+        if (routestops.size() <= 0)
+            return;
+        for (Routestop routestop : routestops) {
+            latLngs.add(new LatLng(Double.parseDouble(routestop.getLatitude()), Double.parseDouble(routestop.getLongitude())));
+        }
+        NotificationSender.getmInstance().setRoutestops(routestops);
+        final LatLng origin = new LatLng(latLngs.get(0).latitude, latLngs.get(0).longitude);
+        final LatLng destination = new LatLng(latLngs.get(routestops.size() - 1).latitude, latLngs.get(routestops.size() - 1).longitude);
+        GeoApiContext context = new GeoApiContext.Builder()
+                .apiKey("AIzaSyAUmVRXx43uVLZomeU1tRR5OYYkGuW6bew")
+                .build();
+        com.google.maps.model.LatLng latLng1 = new com.google.maps.model.LatLng(location.getLongitude(), location.getLatitude());
+        DistanceMatrixApiRequest distanceMatrixApiRequest = DistanceMatrixApi.newRequest(context).origins(latLng1);
+        com.google.maps.model.LatLng[] latLng2 = new com.google.maps.model.LatLng[routestops.size()];
+        DistanceMatrix matrix = null;
+        for (int i = 0; i < routestops.size() && !routestops.get(i).isMessageSent(); i++) {
+            latLng2[i] = new com.google.maps.model.LatLng(Double.parseDouble(routestops.get(i).getLatitude()), Double.parseDouble(routestops.get(i).getLongitude()));
+        }
+        distanceMatrixApiRequest.destinations(latLng2).mode(TravelMode.DRIVING);
+        try {
+            matrix = distanceMatrixApiRequest.await();
+        } catch (ApiException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        DistanceMatrixRow[] distanceMatrixRow = matrix.rows;
+        for (int i = 0; i < distanceMatrixRow.length; i++) {
+            int j = 0;
+            DistanceMatrixRow distanceMatrixRoww = distanceMatrixRow[i];
+            iconFactory.setColor(Color.GREEN);
+            addIcon(iconFactory, getStopName(routestops.get(j), distanceMatrixRoww.elements[j].duration), routestops.get(j++).getStopid(), origin);
+            iconFactory.setColor(Color.RED);
+            addIcon(iconFactory, getStopName(routestops.get(routestops.size() - 1), distanceMatrixRoww.elements[distanceMatrixRoww.elements.length - 1].duration), routestops.get(routestops.size() - 1).getStopid(), destination);
+            for (LatLng position : latLngs.subList(1, routestops.size() - 1)) {
+                iconFactory.setColor(Color.BLUE);
+                addIcon(iconFactory, getStopName(routestops.get(j), distanceMatrixRoww.elements[j].duration), routestops.get(j++).getStopid(), position);
+            }
+        }
+    }
+
+    public String getStopName(Routestop routestop, Duration duration) {
+        String title = "";
+        if (routestop != null) {
+            title = routestop.getStopname();
+        }
+        if (duration != null) {
+            title += ", " + duration.humanReadable;
+        }
+        return title;
     }
 
     private BitmapDescriptor getCarMapIcon(int resourceId) {
@@ -273,10 +351,12 @@ public class MapViewFragment extends AppBaseFragment implements GoogleMap.OnMark
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Intent i = new Intent(getContext(),StopStudentAttendance.class);
-        i.putExtra(StopStudentAttendance.STOP_ID,marker.getTag().toString());
+        Intent i = new Intent(getContext(), StopStudentAttendance.class);
+        i.putExtra(StopStudentAttendance.STOP_ID, marker.getTag().toString());
         i.putExtra(StopStudentAttendance.STOP_NAME, marker.getTitle());
         startActivity(i);
         return false;
     }
+
+    List<Marker> markers = new ArrayList<>();
 }

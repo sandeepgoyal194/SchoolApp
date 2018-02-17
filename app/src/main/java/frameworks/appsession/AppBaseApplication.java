@@ -2,6 +2,7 @@ package frameworks.appsession;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.support.multidex.MultiDex;
 
 import transport.school.com.schoolapp.LoginActivity;
 import transport.school.com.schoolapp.bean.LoginResponse;
@@ -36,6 +37,7 @@ public class AppBaseApplication extends Application {
         mAppUserManager = new AppUserManager(this);
         mAppSessionManager = new AppSessionManager(this);
         initSession();
+        MultiDex.install(this);
     }
 
     public static AppBaseApplication getApplication() {

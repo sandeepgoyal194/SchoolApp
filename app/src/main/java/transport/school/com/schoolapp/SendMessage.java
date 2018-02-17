@@ -24,7 +24,7 @@ public class SendMessage extends AppBaseActivity {
 
     @Override
     public int getViewToCreate() {
-        return R.layout.activity_send_message;
+        return R.layout.content_send_message;
     }
 
 
