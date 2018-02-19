@@ -37,16 +37,16 @@ public class StudentAttendanceFragment extends AppBaseFragment implements Studen
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
     protected StudentAttendanceAdapter adapter;
-
+    StickyRecyclerHeadersDecoration recyclerHeadersDecoration;
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         adapter = new StudentAttendanceAdapter(getContext(),this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new StickyRecyclerHeadersDecoration(adapter));
+        recyclerHeadersDecoration = new StickyRecyclerHeadersDecoration(adapter);
+        recyclerView.addItemDecoration(recyclerHeadersDecoration);
     }
 
     public void imVisible() {
@@ -94,6 +94,7 @@ public class StudentAttendanceFragment extends AppBaseFragment implements Studen
             }
         }
         adapter.setStudentList(studentList, "");
+        recyclerHeadersDecoration.invalidateHeaders();
     }
 
     @Override
