@@ -133,7 +133,23 @@ public class MapViewFragment extends AppBaseFragment implements GoogleMap.OnMark
                         @Override
                         public void onSuccess(StopResponse stopResponse, Response response) {
                            routestops = stopResponse.getRoutestops();
-                            drawRoute(routestops);
+                           String sequence;
+                           if(AppBaseApplication.getApplication().isMorningRoute()) {
+                               sequence = stopResponse.getRoute().getMorningsequence();
+                           }else {
+                               sequence = stopResponse.getRoute().getEveningsequence();
+                           }
+
+                           String[] routes = sequence.split(",");
+
+                            List<Routestop> routestopss = new ArrayList<>();
+                           for(String route:routes) {
+                               routestopss.add(routestops.get(Integer.parseInt(route)));
+
+                               }
+
+
+                            drawRoute(routestopss);
                         }
 
                         @Override
