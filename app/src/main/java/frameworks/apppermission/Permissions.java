@@ -2,7 +2,7 @@ package frameworks.apppermission;
 
 import android.Manifest;
 /**
- * Created by Sandeep on 21/01/2017.
+ * Created by naveen on 21/01/2017.
  */
 
 public class Permissions {

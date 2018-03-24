@@ -1,7 +1,7 @@
 package transport.school.com.schoolapp.bean;
 import com.google.gson.annotations.SerializedName;
 /**
- * Created by sandeep on 1/1/18.
+ * Created by naveen on 1/1/18.
  */
 public class StudentRouteReply {
     @SerializedName("e")

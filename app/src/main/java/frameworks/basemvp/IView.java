@@ -2,7 +2,7 @@ package frameworks.basemvp;
 
 import android.content.Intent;
 /**
- * Created by sandeep.g9 on 3/7/2017.
+ * Created by naveen.g9 on 3/7/2017.
  */
 
 public interface IView extends IBaseView {

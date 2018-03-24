@@ -2,7 +2,7 @@ package frameworks.basemvp;
 
 import android.content.Context;
 /**
- * Created by sandeep on 7/9/17.
+ * Created by naveen on 7/9/17.
  */
 
 public interface IBaseView {

@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 /**
- * Created by Sandeep on 15/07/2017.
+ * Created by naveen on 15/07/2017.
  */
 
 public class LocationManagerExtended extends LocationManager {

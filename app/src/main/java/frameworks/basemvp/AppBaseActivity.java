@@ -32,7 +32,7 @@ import transport.school.com.schoolapp.R;
 import transport.school.com.schoolapp.bean.LocationUpdateReply;
 import transport.school.com.schoolapp.bean.LocationUpdateRequest;
 /**
- * Created by sandeep.g9 on 3/7/2017.
+ * Created by naveen.g9 on 3/7/2017.
  */
 public abstract class AppBaseActivity<T extends IPresenter> extends PermissionActivity implements IActivityView {
     public static final String TAG = "Villeger";

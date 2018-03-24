@@ -7,7 +7,7 @@ import frameworks.dbhandler.PrefManager;
 import frameworks.retrofit.GsonFactory;
 import transport.school.com.schoolapp.bean.LoginResponse;
 /**
- * Created by Sandeep on 04/12/2016.
+ * Created by naveen on 04/12/2016.
  */
 
 class AppSessionManager {

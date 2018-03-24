@@ -3,7 +3,7 @@ import android.content.Context;
 
 import frameworks.customlayout.EmptyLayout;
 /**
- * Created by sandeep on 14/1/18.
+ * Created by naveen on 14/1/18.
  */
 public class NoStudentLayout extends EmptyLayout {
     public NoStudentLayout(Context context) {

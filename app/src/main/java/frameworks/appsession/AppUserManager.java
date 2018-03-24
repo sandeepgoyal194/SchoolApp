@@ -8,7 +8,7 @@ import frameworks.retrofit.GsonFactory;
 import transport.school.com.schoolapp.bean.Route;
 import transport.school.com.schoolapp.bean.Teacher;
 /**
- * Created by Sandeep on 06/12/2016.
+ * Created by naveen on 06/12/2016.
  */
 
 public class AppUserManager {

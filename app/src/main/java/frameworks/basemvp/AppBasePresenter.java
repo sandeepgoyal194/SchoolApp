@@ -8,7 +8,7 @@ import frameworks.appsession.IProfileIntractor;
 import frameworks.appsession.ProfileInteractorImpl;
 import frameworks.appsession.UserInfo;
 /**
- * Created by sandeep.g9 on 7/27/2017.
+ * Created by naveen.g9 on 7/27/2017.
  */
 
 public abstract class AppBasePresenter<T extends IView> implements IPresenter<T>, IProfileIntractor.onProfileDownloaded {

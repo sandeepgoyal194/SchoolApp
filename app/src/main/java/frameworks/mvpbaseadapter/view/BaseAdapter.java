@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import frameworks.basemvp.AppBaseActivity;
 import frameworks.mvpbaseadapter.presenter.IBaseAdapterPresenter;
 /**
- * Created by sandeep on 31/7/17.
+ * Created by naveen on 31/7/17.
  */
 
 public abstract class BaseAdapter<T extends BaseViewHolder,E extends IBaseAdapterPresenter> extends RecyclerView.Adapter<T> implements IBaseAdapterView {

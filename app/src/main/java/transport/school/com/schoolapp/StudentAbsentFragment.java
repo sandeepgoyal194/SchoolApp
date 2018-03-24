@@ -13,7 +13,7 @@ import frameworks.basemvp.IPresenter;
 import transport.school.com.schoolapp.bean.RouteStudentList;
 import transport.school.com.schoolapp.bean.Student;
 /**
- * Created by sandeep on 22/1/18.
+ * Created by naveen on 22/1/18.
  */
 public class StudentAbsentFragment extends StudentAttendanceFragment {
     public void setStudentList(RouteStudentList routeStudentList) {

@@ -28,7 +28,7 @@ import java.util.List;
 import frameworks.locationmanager.LocationManagerService;
 import frameworks.locationmanager.location.helper.GACHelperInterface;
 /**
- * Created by Sandeep on 09/06/2016.
+ * Created by naveen on 09/06/2016.
  */
 public class LocationManager implements GACHelperInterface {
     private static final String TAG = "LocationManager";

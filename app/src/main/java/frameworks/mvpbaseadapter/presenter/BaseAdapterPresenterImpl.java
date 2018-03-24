@@ -4,7 +4,7 @@ package frameworks.mvpbaseadapter.presenter;
 import frameworks.mvpbaseadapter.view.IBaseAdapterView;
 import frameworks.mvpbaseadapter.view.IBaseViewHolderView;
 /**
- * Created by sandeep on 3/8/17.
+ * Created by naveen on 3/8/17.
  */
 
 public abstract class BaseAdapterPresenterImpl <T extends IBaseViewHolderView,E extends IBaseAdapterView> implements IBaseAdapterPresenter<T,E> {

@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import frameworks.locationmanager.location.BaseLocationActivity;
 /**
- * Created by Sandeep on 21/01/2017.
+ * Created by naveen on 21/01/2017.
  */
 
 abstract public class PermissionActivity extends BaseLocationActivity {

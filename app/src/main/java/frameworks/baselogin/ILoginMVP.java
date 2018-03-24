@@ -8,7 +8,7 @@ import frameworks.basemvp.IPresenter;
 import frameworks.basemvp.IView;
 import transport.school.com.schoolapp.bean.LoginResponse;
 /**
- * Created by sandeep.g9 on 7/27/2017.
+ * Created by naveen.g9 on 7/27/2017.
  * This is Base Login MVP
  * Every type{Email, Social Login} should extend this for common login methods
  */

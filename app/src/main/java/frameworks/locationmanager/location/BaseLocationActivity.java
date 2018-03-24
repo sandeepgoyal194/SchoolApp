@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 /**
- * Created by Sandeep on 10/06/2016.
+ * Created by naveen on 10/06/2016.
  */
 public abstract class BaseLocationActivity extends AppCompatActivity implements LocationManager.LocationAndSettingChangeUpdates {
     protected LocationManager mLocationManager = null;

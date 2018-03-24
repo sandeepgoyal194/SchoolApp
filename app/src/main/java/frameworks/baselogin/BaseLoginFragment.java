@@ -5,7 +5,7 @@ import android.content.Context;
 import frameworks.appsession.UserInfo;
 import frameworks.basemvp.AppBaseFragment;
 /**
- * Created by sandeep.g9 on 7/27/2017.
+ * Created by naveen.g9 on 7/27/2017.
  */
 
 public abstract class BaseLoginFragment<T extends ILoginMVP.ILoginPresenter> extends AppBaseFragment<T> implements ILoginMVP.ILoginView {

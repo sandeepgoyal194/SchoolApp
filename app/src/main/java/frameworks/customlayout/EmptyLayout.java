@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import transport.school.com.schoolapp.R;
 /**
- * Created by sandeep on 4/11/17.
+ * Created by naveen on 4/11/17.
  */
 
 public abstract class EmptyLayout extends RelativeLayout {

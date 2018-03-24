@@ -8,7 +8,7 @@ import frameworks.retrofit.WebServicesWrapper;
 import retrofit2.Response;
 
 /**
- * Created by sandeep on 24/8/17.
+ * Created by naveen on 24/8/17.
  */
 
 public class ProfileInteractorImpl implements IProfileIntractor {

@@ -4,7 +4,7 @@ import android.content.Intent;
 
 import frameworks.basemvp.IBaseView;
 /**
- * Created by sandeep on 31/7/17.
+ * Created by naveen on 31/7/17.
  */
 
 public interface IBaseAdapterView extends IBaseView {

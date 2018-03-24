@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
 import frameworks.customlayout.EmptyLayout;
 import transport.school.com.schoolapp.R;
 /**
- * Created by sandeep.g9 on 3/7/2017.
+ * Created by naveen.g9 on 3/7/2017.
  */
 
 public abstract class AppBaseFragment<T extends IPresenter> extends android.support.v4.app.Fragment implements IView {

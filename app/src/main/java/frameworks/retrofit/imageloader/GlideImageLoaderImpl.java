@@ -6,7 +6,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 /**
- * Created by sandeep.g9 on 10/20/2016.
+ * Created by naveen.g9 on 10/20/2016.
  */
 public class GlideImageLoaderImpl implements ImageLoader {
     Context mContext;

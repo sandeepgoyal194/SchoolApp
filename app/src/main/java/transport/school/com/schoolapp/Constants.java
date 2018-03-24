@@ -1,6 +1,6 @@
 package transport.school.com.schoolapp;
 /**
- * Created by sandeep on 6/1/18.
+ * Created by naveen on 6/1/18.
  */
 public class Constants {
     public static final float ZOOM_LEVEL_WORLD = 1;

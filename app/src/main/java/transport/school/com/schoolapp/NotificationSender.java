@@ -22,7 +22,7 @@ import transport.school.com.schoolapp.bean.NotificationBean;
 import transport.school.com.schoolapp.bean.Routestop;
 
 /**
- * Created by sandeepgoyal on 02/02/18.
+ * Created by naveengoyal on 02/02/18.
  */
 
 public class NotificationSender {

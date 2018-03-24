@@ -2,7 +2,7 @@ package frameworks.retrofit.imageloader;
 
 import android.widget.ImageView;
 /**
- * Created by sandeep.g9 on 10/20/2016.
+ * Created by naveen.g9 on 10/20/2016.
  */
 
 public interface ImageLoader {

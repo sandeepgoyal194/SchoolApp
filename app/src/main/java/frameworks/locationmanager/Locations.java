@@ -1,7 +1,7 @@
 package frameworks.locationmanager;
 
 /**
- * Created by Sandeep on 08/07/2017.
+ * Created by naveen on 08/07/2017.
  */
 
 public class Locations {

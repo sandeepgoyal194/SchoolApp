@@ -3,7 +3,7 @@ package frameworks.locationmanager;
 import android.location.Location;
 
 /**
- * Created by Sandeep on 15/07/2017.
+ * Created by naveen on 15/07/2017.
  */
 
 public class LocationManagerService {
