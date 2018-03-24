@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#f6b039</color>
+    <color name="colorPrimaryDark">#dd9a28</color>
+    <color name="colorAccent">#d07e0a</color>
 
     <color name="colorborder">#c9c9c9</color>
     <color name="black">#000000</color>
@@ -97,6 +97,7 @@
     <color name="grey_900">#212121</color>
     <color name="grey_dropbox">#7B8994</color>
     <color name="grey_map_background">#F2F2E9</color>
+
 
 
 

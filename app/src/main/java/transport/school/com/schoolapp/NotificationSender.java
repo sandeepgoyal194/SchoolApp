@@ -1,4 +1,6 @@
 package transport.school.com.schoolapp;
+import android.util.Log;
+
 import com.google.maps.DistanceMatrixApi;
 import com.google.maps.DistanceMatrixApiRequest;
 import com.google.maps.GeoApiContext;
@@ -38,6 +40,7 @@ public class NotificationSender {
         return  mInstance;
     }
     public void setCurrentLatLng(com.google.android.gms.maps.model.LatLng latLng) {
+        Log.e("SchoolApp","routestops.size "+routestops.size());
         if(routestops.size()<=0) {
             return;
         }
@@ -63,26 +66,34 @@ public class NotificationSender {
             e.printStackTrace();
         }
 
+        if(matrix == null) {
+            return;
+        }
         DistanceMatrixRow[] distanceMatrixRow = matrix.rows;
         for(int i =0;i<distanceMatrixRow.length;i++) {
             DistanceMatrixRow distanceMatrixRoww = distanceMatrixRow[i];
-            for(int j=0;j<distanceMatrixRoww.elements.length;j++)
-            if(distanceMatrixRoww.elements[j].duration.inSeconds < 60*10) {
-                NotificationBean notificationBean = new NotificationBean();
-                notificationBean.setMessage("Bus reaching within 10 Minutes");
-                notificationBean.setStopid(routestops.get(j).getStopid());
-                final int finalI = j;
-                WebServicesWrapper.getInstance().pushNotificatione(notificationBean, new ResponseResolver<String>() {
-                    @Override
-                    public void onSuccess(String s, Response response) {
-                        routestops.get(finalI).setMessageSent(true);
-                    }
+            for(int j=0;j<distanceMatrixRoww.elements.length;j++) {
+                Log.e("SchoolApp", "distanceMatrixRoww.elements[j].duration" + distanceMatrixRoww.elements[j].duration);
+                if (distanceMatrixRoww.elements[j].duration != null && distanceMatrixRoww.elements[j].duration.inSeconds < 60 * 10) {
+                    NotificationBean notificationBean = new NotificationBean();
+                    Log.e("SchoolApp", "Notification sending");
+                    notificationBean.setMessage("Bus reaching within 10 Minutes");
+                    notificationBean.setStopid(routestops.get(j).getStopid());
+                    final int finalI = j;
+                    WebServicesWrapper.getInstance().pushNotificatione(notificationBean, new ResponseResolver<String>() {
+                        @Override
+                        public void onSuccess(String s, Response response) {
 
-                    @Override
-                    public void onFailure(RestError error, String msg) {
+                            Log.e("SchoolApp", "Notification send success");
+                            routestops.get(finalI).setMessageSent(true);
+                        }
 
-                    }
-                });
+                        @Override
+                        public void onFailure(RestError error, String msg) {
+                            Log.e("SchoolApp", "Notification send fail");
+                        }
+                    });
+                }
             }
         }
 

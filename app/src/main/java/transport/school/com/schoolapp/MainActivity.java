@@ -17,6 +17,7 @@ import frameworks.basemvp.AppBaseFragment;
 import frameworks.basemvp.IPresenter;
 import frameworks.retrofit.ResponseResolver;
 import frameworks.retrofit.RestError;
+import frameworks.retrofit.WebServices;
 import frameworks.retrofit.WebServicesWrapper;
 import retrofit2.Response;
 import transport.school.com.schoolapp.bean.ActiveRouteReply;
@@ -56,6 +57,7 @@ public class MainActivity extends AppBaseActivity {
         super.onCreate(savedInstanceState);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        mViewPager.setOffscreenPageLimit(3);
     }
 
     void loadFragments() {
@@ -88,7 +90,7 @@ public class MainActivity extends AppBaseActivity {
         super.onResume();
 
 
-        WebServicesWrapper.getInstance().getActiveRoute(AppBaseApplication.getApplication().getRoute(), new ResponseResolver<ActiveRouteReply>() {
+        /*WebServicesWrapper.getInstance().getActiveRoute(AppBaseApplication.getApplication().getRoute(), new ResponseResolver<ActiveRouteReply>() {
             @Override
             public void onSuccess(ActiveRouteReply activeRouteReply, Response response) {
                 if (activeRouteReply.getStudents().get(0).getE().equals("0") && activeRouteReply.getStudents().get(0).getM().equals("0")) {
@@ -108,7 +110,7 @@ public class MainActivity extends AppBaseActivity {
             @Override
             public void onFailure(RestError error, String msg) {
             }
-        });
+        });*/
     }
 
     @Override
@@ -155,7 +157,7 @@ public class MainActivity extends AppBaseActivity {
                 case 1:
                     return "Attendence";
                 case 2:
-                    return "Students Picked";
+                    return "Pick Up";
             }
             return "Attendence";
         }
@@ -200,7 +202,21 @@ public class MainActivity extends AppBaseActivity {
                 return super.onOptionsItemSelected(item);
             case R.id.sendMsg:
                 startActivity(new Intent(this,SendMessage.class));
+                break;
             case R.id.logout:
+                WebServicesWrapper.getInstance().logout(AppBaseApplication.getApplication().getSession(), new ResponseResolver<String>() {
+                    @Override
+                    public void onSuccess(String s, Response response) {
+                        finish();
+                        AppBaseApplication.getApplication().onLogout();
+                    }
+
+                    @Override
+                    public void onFailure(RestError error, String msg) {
+
+                    }
+                });
+
         }
         return true;
     }

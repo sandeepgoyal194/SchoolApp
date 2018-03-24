@@ -73,7 +73,7 @@ public class StudentAttendanceFragment extends AppBaseFragment implements Studen
         AttendanceRecord attendanceRecord = new AttendanceRecord();
         attendanceRecord.setmRouteId(AppBaseApplication.getApplication().getRoute().getRouteid());
         attendanceRecord.setAttendancedate(Utils.getCurrentDate());
-        attendanceRecord.setMorningevening(AppBaseApplication.getApplication().getRoute().getmMorningEvening());
+        attendanceRecord.setMorningevening(AppBaseApplication.getApplication().getUser().getmMorningEvening());
         WebServicesWrapper.getInstance().getAttendence(attendanceRecord, new ResponseResolver<RouteStudentList>() {
             @Override
             public void onSuccess(RouteStudentList routeStudentList, Response response) {

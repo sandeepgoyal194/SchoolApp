@@ -68,7 +68,7 @@ public class StudentAttendanceAdapter extends RecyclerView.Adapter<StudentAttend
 
         public void setStudent(Student student) {
             studentName.setText(student.getStudentname());
-            new GlideImageLoaderImpl(mContext).loadImage(student.getProfilePic(), thumbnail, R.drawable.blank_person);
+            new GlideImageLoaderImpl(mContext).loadImage(student.getProfilePic(), thumbnail, R.drawable.student_icons);
             this.student = student;
             if(student.getmAttendance() != 0) {
                 checkbox.setChecked(true);

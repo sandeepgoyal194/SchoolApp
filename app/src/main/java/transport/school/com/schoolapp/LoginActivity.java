@@ -50,7 +50,7 @@ public class LoginActivity extends AppBaseActivity {
                 return false;
             }
         });
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        View mEmailSignInButton =  findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,7 +106,11 @@ public class LoginActivity extends AppBaseActivity {
             WebServicesWrapper.getInstance().login(request, new ResponseResolver<LoginResponse>() {
                 @Override
                 public void onSuccess(LoginResponse loginResponse, Response response) {
-                    if (!loginResponse.getError()) {
+                    if (!loginResponse.getError() ) {
+                        if(loginResponse.getTeacher() == null) {
+                            Toast.makeText(LoginActivity.this,"No Teacher Assigned to this Route",Toast.LENGTH_LONG).show();
+                            return;
+                        }
                         AppBaseApplication.getApplication().setSession(loginResponse);
                         Intent i = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(i);

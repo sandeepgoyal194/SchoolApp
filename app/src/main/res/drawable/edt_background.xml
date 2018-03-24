@@ -1,10 +1,10 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:top="10dp">
         <shape android:shape="rectangle">
-            <solid android:color="#00000000"/>
+            <solid android:color="#febc67"/>
             <stroke
                 android:width="1dp"
-                android:color="#000000"/>
+                android:color="#febc67"/>
         </shape>
 
     </item>
